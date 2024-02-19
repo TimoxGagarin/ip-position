@@ -26,11 +26,19 @@ public class IpInfoController {
     @GetMapping
     public List<IpInfo> getIpInfo(@RequestParam(required = false) String ip) {
         // If IP parameter is provided, return information for that IP
-        if (ip != null)
+        if (ip != null && isValidIpAddress(ip))
             return List.of(ipInfoService.getIpInfo(ip));
 
         // If no specific IP provided, return information for all IPs
         return ipInfoService.getIpsInfo();
+    }
+
+    // Additional method for validating IP addresses
+    private boolean isValidIpAddress(String ip) {
+        // Implementation of IP address validation (may require more thorough checking)
+        // In the example, it simply checks that the passed string looks like an IP
+        // address
+        return ip.matches("\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}");
     }
 
     // POST endpoint to add new IpInfo
