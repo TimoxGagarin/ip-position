@@ -1,4 +1,4 @@
-package com.ip_position.ipposition.ipinfo;
+package com.ip_position.ipposition.services;
 
 import java.util.List;
 import java.util.Map;
@@ -12,12 +12,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import com.ip_position.ipposition.city.City;
-import com.ip_position.ipposition.city.CityRepository;
-import com.ip_position.ipposition.latlng.LatLng;
-import com.ip_position.ipposition.latlng.LatLngRepository;
-import com.ip_position.ipposition.provider.Provider;
-import com.ip_position.ipposition.provider.ProviderRepository;
+import com.ip_position.ipposition.objects.City;
+import com.ip_position.ipposition.objects.IpInfo;
+import com.ip_position.ipposition.objects.LatLng;
+import com.ip_position.ipposition.objects.Provider;
+import com.ip_position.ipposition.repositories.CityRepository;
+import com.ip_position.ipposition.repositories.IpInfoRepository;
+import com.ip_position.ipposition.repositories.LatLngRepository;
+import com.ip_position.ipposition.repositories.ProviderRepository;
 
 @Service
 public class IpInfoService {

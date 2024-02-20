@@ -1,14 +1,16 @@
-package com.ip_position.ipposition.city;
+package com.ip_position.ipposition.services;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.springframework.stereotype.Service;
 
+import com.ip_position.ipposition.objects.City;
+import com.ip_position.ipposition.repositories.CityRepository;
+
 // Service annotation indicating that this class is a Spring service
 @Service
 public class CityService {
-
     // Dependency injection of CityRepository and Logger
     private final CityRepository cityRepository;
     private Logger logger;

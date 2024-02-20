@@ -1,4 +1,4 @@
-package com.ip_position.ipposition.city;
+package com.ip_position.ipposition.objects;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

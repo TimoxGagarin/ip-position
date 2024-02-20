@@ -1,6 +1,9 @@
-package com.ip_position.ipposition.ipinfo;
+package com.ip_position.ipposition.controllers;
 
 import org.springframework.web.bind.annotation.RestController;
+
+import com.ip_position.ipposition.objects.IpInfo;
+import com.ip_position.ipposition.services.*;
 
 import java.util.List;
 

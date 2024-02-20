@@ -1,4 +1,4 @@
-package com.ip_position.ipposition.ipinfo;
+package com.ip_position.ipposition.configs;
 
 import java.util.logging.Logger;
 

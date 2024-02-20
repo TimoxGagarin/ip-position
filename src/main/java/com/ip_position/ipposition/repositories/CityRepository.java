@@ -1,6 +1,8 @@
-package com.ip_position.ipposition.city;
+package com.ip_position.ipposition.repositories;
 
 import org.springframework.stereotype.Repository;
+
+import com.ip_position.ipposition.objects.City;
 
 import java.util.Optional;
 

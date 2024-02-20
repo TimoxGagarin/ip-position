@@ -1,14 +1,16 @@
-package com.ip_position.ipposition.provider;
+package com.ip_position.ipposition.services;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.springframework.stereotype.Service;
 
+import com.ip_position.ipposition.objects.Provider;
+import com.ip_position.ipposition.repositories.ProviderRepository;
+
 // Service annotation indicating that this class is a Spring service
 @Service
 public class ProviderService {
-
     // Dependency injection of ProviderRepository and Logger
     private ProviderRepository providerRepository;
     private Logger logger;

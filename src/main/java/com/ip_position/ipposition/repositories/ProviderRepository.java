@@ -1,9 +1,11 @@
-package com.ip_position.ipposition.provider;
+package com.ip_position.ipposition.repositories;
 
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+
+import com.ip_position.ipposition.objects.Provider;
 
 public interface ProviderRepository extends JpaRepository<Provider, Long> {
     // Custom query method using JPQL to find a Provider by its isp (Internet

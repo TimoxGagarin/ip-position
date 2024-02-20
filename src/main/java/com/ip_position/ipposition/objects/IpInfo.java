@@ -1,8 +1,4 @@
-package com.ip_position.ipposition.ipinfo;
-
-import com.ip_position.ipposition.city.City;
-import com.ip_position.ipposition.latlng.LatLng;
-import com.ip_position.ipposition.provider.Provider;
+package com.ip_position.ipposition.objects;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
