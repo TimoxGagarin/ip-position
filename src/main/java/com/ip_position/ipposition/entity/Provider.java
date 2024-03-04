@@ -1,9 +1,18 @@
 package com.ip_position.ipposition.entity;
 
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 
@@ -18,6 +27,11 @@ public class Provider {
     private String isp;
     private String org;
     private String asName;
+
+    @JsonIgnore
+    @ManyToMany
+    @JoinTable(name = "city_provider_relation", joinColumns = @JoinColumn(name = "provider_id"), inverseJoinColumns = @JoinColumn(name = "city_id"))
+    private Set<City> cities = new HashSet<>();
 
     public Provider() {
     }
@@ -74,11 +88,43 @@ public class Provider {
         this.asName = asName;
     }
 
+    public Set<City> getCities() {
+        return cities;
+    }
+
+    public void addCity(City city) {
+        cities.add(city);
+        city.getProviders().add(this);
+    }
+
+    public void removeCity(City city) {
+        cities.remove(city);
+        city.getProviders().remove(this);
+    }
+
     @Override
     public String toString() {
         return "Provider(id=" + this.id +
                 ", isp=" + this.isp +
                 ", org=" + this.org +
                 ", asName=" + this.asName + ")";
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj instanceof Provider) {
+            Provider other = (Provider) obj;
+            return Objects.equals(this.isp, other.isp) &&
+                    Objects.equals(this.org, other.org) &&
+                    Objects.equals(this.asName, other.asName);
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(isp, org, asName);
     }
 }

@@ -1,5 +1,7 @@
 package com.ip_position.ipposition.entity;
 
+import java.util.Objects;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -9,28 +11,33 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table
-public class LatLng {
+public class Position {
 
     @Id
-    @SequenceGenerator(name = "latlng_sequence", sequenceName = "latlng_sequence", allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "latlng_sequence")
+    @SequenceGenerator(name = "position_sequence", sequenceName = "position_sequence", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "position_sequence")
     private Long id;
 
     private Double latitude;
     private Double longitude;
 
-    public LatLng() {
+    public Position() {
     }
 
-    public LatLng(Long id, Double latitude, Double longitude) {
+    public Position(Long id, Double latitude, Double longitude) {
         this.id = id;
         this.latitude = latitude;
         this.longitude = longitude;
     }
 
-    public LatLng(Double latitude, Double longitude) {
+    public Position(Double latitude, Double longitude) {
         this.latitude = latitude;
         this.longitude = longitude;
+    }
+
+    public Position(Position position) {
+        this.latitude = position.latitude;
+        this.longitude = position.longitude;
     }
 
     public Long getId() {
@@ -59,8 +66,25 @@ public class LatLng {
 
     @Override
     public String toString() {
-        return "LatLng(id=" + this.id +
+        return "Position(id=" + this.id +
                 ", lat=" + this.latitude +
                 ", lon=" + this.longitude + ")";
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj instanceof Position) {
+            Position other = (Position) obj;
+            return Objects.equals(this.latitude, other.latitude) &&
+                    Objects.equals(this.longitude, other.longitude);
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(latitude, longitude);
     }
 }

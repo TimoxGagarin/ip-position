@@ -1,5 +1,7 @@
 package com.ip_position.ipposition.entity;
 
+import java.util.Objects;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -23,7 +25,7 @@ public class IpInfo {
 
     @ManyToOne
     @JoinColumn(name = "position_id")
-    private LatLng position;
+    private Position position;
 
     private String timeZone;
 
@@ -39,7 +41,7 @@ public class IpInfo {
     public IpInfo(
             Long id,
             City city,
-            LatLng position,
+            Position position,
             String timeZone,
             Provider provider,
             String query) {
@@ -53,7 +55,7 @@ public class IpInfo {
 
     public IpInfo(
             City city,
-            LatLng position,
+            Position position,
             String timeZone,
             Provider provider,
             String query) {
@@ -80,11 +82,11 @@ public class IpInfo {
         this.city = city;
     }
 
-    public LatLng getPosition() {
+    public Position getPosition() {
         return this.position;
     }
 
-    public void setPosition(LatLng position) {
+    public void setPosition(Position position) {
         this.position = position;
     }
 
@@ -120,5 +122,24 @@ public class IpInfo {
                 ", timezone=" + this.timeZone +
                 ", provider=" + this.provider +
                 ", query=" + this.query + ")";
+    }
+
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj instanceof IpInfo) {
+            IpInfo ipInfo = (IpInfo) obj;
+            return Objects.equals(this.city, ipInfo.city) &&
+                    Objects.equals(this.provider, ipInfo.provider) &&
+                    Objects.equals(this.position, ipInfo.position) &&
+                    Objects.equals(this.timeZone, ipInfo.timeZone) &&
+                    Objects.equals(this.query, ipInfo.query);
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(city, provider, position, timeZone, query);
     }
 }

@@ -1,5 +1,6 @@
 package com.ip_position.ipposition.services;
 
+import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -18,8 +19,31 @@ public class CityService {
         this.logger = logger;
     }
 
-    public void addNewCity(City city) {
+    public City addNewCity(City city) {
         logger.log(Level.INFO, "{0} was added into table City", city);
-        cityRepository.save(city);
+        Optional<City> existingCity = cityRepository.findCityByAll(city);
+        if (existingCity.isEmpty()) {
+            cityRepository.save(city);
+            return city;
+        }
+        return existingCity.get();
+    }
+
+    public City findCityByName(String cityName) {
+        Optional<City> city = cityRepository.findCityByCityName(cityName);
+        if (city.isPresent())
+            return city.get();
+        return null;
+    }
+
+    public void deleteCity(Long cityId) {
+        boolean hasReferences = cityRepository.hasReferences(cityId);
+
+        if (hasReferences) {
+            throw new IllegalStateException("City with id " + cityId + " does not exists or has references");
+        }
+        cityRepository.clearRelations(cityId);
+        cityRepository.deleteById(cityId);
+        logger.log(Level.INFO, "City with id={0} was deleted from table City", cityId);
     }
 }

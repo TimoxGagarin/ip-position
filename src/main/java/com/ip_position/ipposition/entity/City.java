@@ -1,9 +1,16 @@
 package com.ip_position.ipposition.entity;
 
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 
@@ -21,6 +28,10 @@ public class City {
     private String regionName;
     private String cityName;
     private String zip;
+
+    @JsonIgnore
+    @ManyToMany(mappedBy = "cities")
+    private Set<Provider> providers = new HashSet<>();
 
     public City() {
 
@@ -114,6 +125,20 @@ public class City {
         this.zip = zip;
     }
 
+    public Set<Provider> getProviders() {
+        return providers;
+    }
+
+    public void addProvider(Provider provider) {
+        providers.add(provider);
+        provider.getCities().add(this);
+    }
+
+    public void removeProvider(Provider provider) {
+        providers.remove(provider);
+        provider.getCities().remove(this);
+    }
+
     @Override
     public String toString() {
         return "City(id=" + this.id +
@@ -123,5 +148,26 @@ public class City {
                 ", regionName=" + this.regionName +
                 ", cityName=" + this.cityName +
                 ", zip=" + this.zip + ")";
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj instanceof City) {
+            City other = (City) obj;
+            return Objects.equals(this.country, other.country) &&
+                    Objects.equals(this.countryCode, other.countryCode) &&
+                    Objects.equals(this.region, other.region) &&
+                    Objects.equals(this.regionName, other.regionName) &&
+                    Objects.equals(this.cityName, other.cityName) &&
+                    Objects.equals(this.zip, other.zip);
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(country, countryCode, region, regionName, cityName, zip);
     }
 }
