@@ -20,7 +20,7 @@ public class CityService {
     }
 
     public City addNewCity(City city) {
-        logger.log(Level.INFO, "{0} was added into table City", city);
+        logger.log(Level.INFO, "{0} was added into table City", city.getCityName());
         Optional<City> existingCity = cityRepository.findCityByAll(city);
         if (existingCity.isEmpty()) {
             cityRepository.save(city);

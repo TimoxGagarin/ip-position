@@ -21,7 +21,8 @@ public class PositionService {
     }
 
     public Position addNewPosition(Position position) {
-        logger.log(Level.INFO, "{0} was added into table LatLng", position);
+        logger.log(Level.INFO, "{0} {1} was added into table LatLng",
+                new Object[] { position.getLatitude(), position.getLongitude() });
 
         Optional<Position> existingPosition = positionRepository.findPositionByLatLng(position.getLatitude(),
                 position.getLongitude());

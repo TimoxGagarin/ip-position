@@ -20,7 +20,7 @@ public class ProviderService {
     }
 
     public Provider addNewProvider(Provider provider) {
-        logger.log(Level.INFO, "{0} was added into table Provider", provider);
+        logger.log(Level.INFO, "{0} was added into table Provider", provider.getIsp());
 
         Optional<Provider> existingProvider = providerRepository.findProviderByAll(provider);
         if (!existingProvider.isPresent()) {
