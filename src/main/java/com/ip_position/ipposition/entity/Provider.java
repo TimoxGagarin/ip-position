@@ -114,8 +114,7 @@ public class Provider {
     public boolean equals(Object obj) {
         if (this == obj)
             return true;
-        if (obj instanceof Provider) {
-            Provider other = (Provider) obj;
+        if (obj instanceof Provider other) {
             return Objects.equals(this.isp, other.isp) &&
                     Objects.equals(this.org, other.org) &&
                     Objects.equals(this.asName, other.asName);

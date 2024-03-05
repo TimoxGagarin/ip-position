@@ -154,8 +154,7 @@ public class City {
     public boolean equals(Object obj) {
         if (this == obj)
             return true;
-        if (obj instanceof City) {
-            City other = (City) obj;
+        if (obj instanceof City other) {
             return Objects.equals(this.country, other.country) &&
                     Objects.equals(this.countryCode, other.countryCode) &&
                     Objects.equals(this.region, other.region) &&

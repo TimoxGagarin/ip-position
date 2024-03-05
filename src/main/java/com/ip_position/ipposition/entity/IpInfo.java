@@ -127,13 +127,12 @@ public class IpInfo {
     public boolean equals(Object obj) {
         if (this == obj)
             return true;
-        if (obj instanceof IpInfo) {
-            IpInfo ipInfo = (IpInfo) obj;
-            return Objects.equals(this.city, ipInfo.city) &&
-                    Objects.equals(this.provider, ipInfo.provider) &&
-                    Objects.equals(this.position, ipInfo.position) &&
-                    Objects.equals(this.timeZone, ipInfo.timeZone) &&
-                    Objects.equals(this.query, ipInfo.query);
+        if (obj instanceof IpInfo other) {
+            return Objects.equals(this.city, other.city) &&
+                    Objects.equals(this.provider, other.provider) &&
+                    Objects.equals(this.position, other.position) &&
+                    Objects.equals(this.timeZone, other.timeZone) &&
+                    Objects.equals(this.query, other.query);
         }
         return false;
     }
