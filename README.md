@@ -1,59 +1,132 @@
-# IP Position Project
+# IP Position API
 
-This project provides a service for retrieving and managing information related to IP addresses. It includes components for handling city data, provider information, geographic coordinates, and IP information. The application utilizes Spring Boot and JPA for backend functionality.
+## Описание API
 
-## Project Structure
+API предоставляет информацию об IP-адресах, городах, провайдерах и их взаимосвязях. Возможности включают получение данных из внешнего API, работы с базой данных, добавление, удаление и обновление информации.
 
-The project is structured as follows:
+## Dependencies (Зависимости)
 
-- **com.ip_position.ipposition.city:** Contains the City entity and its repository for database operations.
-- **com.ip_position.ipposition.provider:** Contains the Provider entity and its repository for database operations.
-- **com.ip_position.ipposition.latlng:** Contains the LatLng entity and its repository for database operations.
-- **com.ip_position.ipposition.ipinfo:** Contains the IpInfo entity, its repository, and the service responsible for IP-related operations.
-- **com.ip_position.ipposition.config:** Includes the configuration class (`IpInfoConfig`) for beans like `RestTemplate` and `Logger`.
-- **com.ip_position.ipposition.controller:** Holds the REST controller (`IpInfoController`) for handling API endpoints related to IP information.
-- **com.ip_position.ipposition.service:** Contains the service class (`IpInfoService`) responsible for business logic.
+Проект использует следующие зависимости:
 
-## Dependencies
+- [Spring Boot](https://spring.io/projects/spring-boot)
+- [Spring Data JPA](https://spring.io/projects/spring-data-jpa)
+- [H2 Database](https://www.h2database.com)
+- [Spring Web](https://spring.io/guides/gs/serving-web-content/)
+- [Jakarta Persistence API (JPA)](https://jakarta.ee/specifications/persistence/)
+- [RestTemplate](https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/web/client/RestTemplate.html)
 
-- **Spring Boot:** For building the application.
-- **Spring Data JPA:** For simplifying database operations.
-- **Spring Web:** For building RESTful APIs.
-- **H2 Database:** An embedded database for development purposes.
-- **RestTemplate:** For making HTTP requests.
-- **Java Logging API:** For logging information.
+## Как запустить
 
-## Database Schema
+1. Склонируйте репозиторий:
 
-The application uses the H2 database with tables for storing information related to cities, providers, geographic coordinates, and IP details. The database schema includes:
+    ```bash
+    git clone https://github.com/TimoxGagarin/ip-position.git
+    ```
 
-- **City:** Information about cities, including country, region, and zip code.
-- **Provider:** Details about Internet Service Providers (ISPs).
-- **LatLng:** Geographic coordinates (latitude and longitude).
-- **IpInfo:** IP-related information, including city, geographic coordinates, time zone, provider, and the queried IP.
+2. Перейдите в каталог проекта:
 
-## How to Run the Project
+    ```bash
+    cd ip-position
+    ```
 
-1. Clone the repository: `git clone https://github.com/your-username/ip-position.git`
-2. Navigate to the project directory: `cd ip-position`
-3. Build the project: `mvn clean install`
-4. Run the application: `mvn spring-boot:run`
+3. Соберите проект:
 
-The application will start, and you can access the API at `http://localhost:8080/api/ip`.
+    ```bash
+    mvn clean install
+    ```
 
-## API Endpoints
+4. Запустите приложение:
 
-- **GET /api/ip:** Retrieve information for all IPs or a specific IP. Use the optional `ip` query parameter for a specific IP.
-- **POST /api/ip:** Add new IP information. Send a JSON payload with the IP details.
+    ```bash
+    mvn spring-boot:run
+    ```
 
-## Sample Usage
+   Приложение будет доступно по адресу [http://localhost:8080](http://localhost:8080).
 
-```bash
-# Retrieve information for all IPs
-curl http://localhost:8080/api/ip
+## Конечные точки
 
-# Retrieve information for a specific IP
-curl http://localhost:8080/api/ip?ip=8.8.8.8
+### 1. Получить всю информацию об IP-адресах
 
-# Add new IP information
-curl -X POST -H "Content-Type: application/json" -d '{"city": {"country": "United States", "region": "CA", "cityName": "Mountain View"}, "position": {"latitude": 37.386, "longitude": -122.0838}, "timeZone": "America/Los_Angeles", "provider": {"isp": "Google", "org": "Google LLC", "asName": "AS15169"}, "query": "8.8.8.8"}' http://localhost:8080/api/ip
+- **Конечная точка:** `GET /api/ip/get/all`
+- **Описание:** Получить список всех IP-адресов с дополнительной информацией.
+
+### 2. Получить информацию об IP-адресе из внешнего API
+
+- **Конечная точка:** `GET /api/ip/get/external_api?ip={ip_address}`
+- **Описание:** Получить информацию об IP-адресе из внешнего API.
+- **Параметры:**
+  - `ip_address`: IP-адрес.
+
+### 3. Получить информацию об IP-адресе из базы данных
+
+- **Конечная точка:** `GET /api/ip/get/db?ip={ip_address}`
+- **Описание:** Получить информацию об IP-адресе из базы данных.
+- **Параметры:**
+  - `ip_address`: IP-адрес.
+
+### 4. Получить провайдеров, предоставляющих услуги в указанном городе
+
+- **Конечная точка:** `GET /api/ip/get/providers?cityName={city_name}`
+- **Описание:** Получить список провайдеров в указанном городе.
+- **Параметры:**
+  - `cityName`: Название города.
+
+### 5. Получить города, обслуживаемые указанным провайдером
+
+- **Конечная точка:** `GET /api/ip/get/cities?providerIsp={provider_isp}`
+- **Описание:** Получить список городов, обслуживаемых указанным провайдером.
+- **Параметры:**
+  - `providerIsp`: Название провайдера (ISP).
+
+### 6. Добавить новую информацию об IP-адресе
+
+- **Конечная точка:** `POST /api/ip/post`
+- **Описание:** Добавить новую информацию об IP-адресе.
+- **Тело запроса:** JSON-объект с данными об IP-адресе.
+
+### 7. Удалить информацию об IP-адресе
+
+- **Конечная точка:** `DELETE /api/ip/delete?id={ip_info_id}`
+- **Описание:** Удалить информацию об IP-адресе.
+- **Параметры:**
+  - `id`: Идентификатор IP-адреса.
+
+### 8. Обновить информацию об IP-адресе
+
+- **Конечная точка:** `PUT /api/ip/put?id={ip_info_id}`
+- **Описание:** Обновить информацию об IP-адресе.
+- **Параметры:**
+  - `id`: Идентификатор IP-адреса.
+
+## Как использовать
+
+1. **Получение всей информации об IP-адресах:**
+   - `GET /api/ip/get/all`
+
+2. **Получение информации об IP-адресе из внешнего API:**
+   - `GET /api/ip/get/external_api?ip={ip_address}`
+   - **Пример:** `GET /api/ip/get/external_api?ip=8.8.8.8`
+
+3. **Получение информации об IP-адресе из базы данных:**
+   - `GET /api/ip/get/db?ip={ip_address}`
+   - **Пример:** `GET /api/ip/get/db?ip=8.8.8.8`
+
+4. **Получение провайдеров, предоставляющих услуги в указанном городе:**
+   - `GET /api/ip/get/providers?cityName={city_name}`
+   - **Пример:** `GET /api/ip/get/providers?cityName=New York`
+
+5. **Получение городов, обслуживаемых указанным провайдером:**
+   - `GET /api/ip/get/cities?providerIsp={provider_isp}`
+   - **Пример:** `GET /api/ip/get/cities?providerIsp=Comcast`
+
+6. **Добавление новой информации об IP-адресе:**
+   - `POST /api/ip/post`
+   - **Тело запроса:** JSON-объект с данными об IP-адресе.
+
+7. **Удаление информации об IP-адресе:**
+   - `DELETE /api/ip/delete?id={ip_info_id}`
+   - **Пример:** `DELETE /api/ip/delete?id=1`
+
+8. **Обновление информации об IP-адресе:**
+   - `PUT /api/ip/put?id={ip_info_id}`
+   - **Пример:** `PUT /api/ip/put?id=1`
