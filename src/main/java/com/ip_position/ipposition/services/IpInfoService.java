@@ -114,7 +114,7 @@ public class IpInfoService {
         ipInfo.setProvider(providerService.addNewProvider(ipInfoProvider));
         ipInfo.setPosition(positionService.addNewPosition(ipInfoPosition));
 
-        if (!ipInfoRepository.findResponseByIP(ipInfo.getQuery()).isPresent())
+        if (!ipInfoRepository.findResponseByIP(ipInfo.getIp()).isPresent())
             ipInfoRepository.save(ipInfo);
     }
 
@@ -156,7 +156,7 @@ public class IpInfoService {
         IpInfo ipInfo = ipInfoRepository.findById(ipInfoId).orElseThrow(() -> new IllegalStateException(
                 String.format("IpInfo with id %ld does not exists", ipInfoId)));
 
-        IpInfo realIpInfo = getIpInfoFromAPI(ipInfo.getQuery());
+        IpInfo realIpInfo = getIpInfoFromAPI(ipInfo.getIp());
 
         if (!ipInfo.getTimeZone().equals(realIpInfo.getTimeZone())) {
             ipInfo.setTimeZone(realIpInfo.getTimeZone());

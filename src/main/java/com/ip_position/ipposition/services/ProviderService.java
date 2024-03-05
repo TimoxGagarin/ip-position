@@ -31,7 +31,7 @@ public class ProviderService {
     }
 
     public Provider findProviderByIsp(String providerIsp) {
-        Optional<Provider> provider = providerRepository.findProviderByIsp(providerIsp);
+        Optional<Provider> provider = providerRepository.findProviderByInternetServiceProvider(providerIsp);
         if (provider.isPresent())
             return provider.get();
         return null;

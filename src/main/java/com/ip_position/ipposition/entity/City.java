@@ -26,7 +26,7 @@ public class City {
     private String countryCode;
     private String region;
     private String regionName;
-    private String cityName;
+    private String name;
     private String zip;
 
     @JsonIgnore
@@ -43,14 +43,14 @@ public class City {
             String countryCode,
             String region,
             String regionName,
-            String cityName,
+            String name,
             String zip) {
         this.id = id;
         this.country = country;
         this.countryCode = countryCode;
         this.region = region;
         this.regionName = regionName;
-        this.cityName = cityName;
+        this.name = name;
         this.zip = zip;
     }
 
@@ -59,13 +59,13 @@ public class City {
             String countryCode,
             String region,
             String regionName,
-            String cityName,
+            String name,
             String zip) {
         this.country = country;
         this.countryCode = countryCode;
         this.region = region;
         this.regionName = regionName;
-        this.cityName = cityName;
+        this.name = name;
         this.zip = zip;
     }
 
@@ -109,12 +109,12 @@ public class City {
         this.regionName = regionName;
     }
 
-    public String getCityName() {
-        return this.cityName;
+    public String getName() {
+        return this.name;
     }
 
-    public void setCityName(String cityName) {
-        this.cityName = cityName;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getZip() {
@@ -146,7 +146,7 @@ public class City {
                 ", countryCode=" + this.countryCode +
                 ", region=" + this.region +
                 ", regionName=" + this.regionName +
-                ", cityName=" + this.cityName +
+                ", name=" + this.name +
                 ", zip=" + this.zip + ")";
     }
 
@@ -159,7 +159,7 @@ public class City {
                     Objects.equals(this.countryCode, other.countryCode) &&
                     Objects.equals(this.region, other.region) &&
                     Objects.equals(this.regionName, other.regionName) &&
-                    Objects.equals(this.cityName, other.cityName) &&
+                    Objects.equals(this.name, other.name) &&
                     Objects.equals(this.zip, other.zip);
         }
         return false;
@@ -167,6 +167,6 @@ public class City {
 
     @Override
     public int hashCode() {
-        return Objects.hash(country, countryCode, region, regionName, cityName, zip);
+        return Objects.hash(country, countryCode, region, regionName, name, zip);
     }
 }

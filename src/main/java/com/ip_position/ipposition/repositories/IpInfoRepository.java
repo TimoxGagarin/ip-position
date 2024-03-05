@@ -12,8 +12,8 @@ import org.springframework.data.jpa.repository.Query;
 
 @Repository
 public interface IpInfoRepository extends JpaRepository<IpInfo, Long> {
-    @Query("SELECT r FROM IpInfo r WHERE r.query = ?1")
-    Optional<IpInfo> findResponseByIP(String query);
+    @Query("SELECT r FROM IpInfo r WHERE r.ip = ?1")
+    Optional<IpInfo> findResponseByIP(String ip);
 
     @Query("SELECT r FROM IpInfo r WHERE r.city.id = ?1")
     List<IpInfo> findAllByCityId(Long cityId);

@@ -33,7 +33,7 @@ public class IpInfo {
     @JoinColumn(name = "provider_id")
     private Provider provider;
 
-    private String query;
+    private String ip;
 
     public IpInfo() {
     }
@@ -44,13 +44,13 @@ public class IpInfo {
             Position position,
             String timeZone,
             Provider provider,
-            String query) {
+            String ip) {
         this.id = id;
         this.city = city;
         this.position = position;
         this.timeZone = timeZone;
         this.provider = provider;
-        this.query = query;
+        this.ip = ip;
     }
 
     public IpInfo(
@@ -58,12 +58,12 @@ public class IpInfo {
             Position position,
             String timeZone,
             Provider provider,
-            String query) {
+            String ip) {
         this.city = city;
         this.position = position;
         this.timeZone = timeZone;
         this.provider = provider;
-        this.query = query;
+        this.ip = ip;
     }
 
     public Long getId() {
@@ -106,12 +106,12 @@ public class IpInfo {
         this.provider = provider;
     }
 
-    public String getQuery() {
-        return this.query;
+    public String getIp() {
+        return this.ip;
     }
 
-    public void setQuery(String query) {
-        this.query = query;
+    public void setIp(String ip) {
+        this.ip = ip;
     }
 
     @Override
@@ -121,7 +121,7 @@ public class IpInfo {
                 ", position=" + this.position +
                 ", timezone=" + this.timeZone +
                 ", provider=" + this.provider +
-                ", query=" + this.query + ")";
+                ", ip=" + this.ip + ")";
     }
 
     public boolean equals(Object obj) {
@@ -132,13 +132,13 @@ public class IpInfo {
                     Objects.equals(this.provider, other.provider) &&
                     Objects.equals(this.position, other.position) &&
                     Objects.equals(this.timeZone, other.timeZone) &&
-                    Objects.equals(this.query, other.query);
+                    Objects.equals(this.ip, other.ip);
         }
         return false;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(city, provider, position, timeZone, query);
+        return Objects.hash(city, provider, position, timeZone, ip);
     }
 }

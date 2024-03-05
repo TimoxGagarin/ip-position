@@ -10,12 +10,12 @@ import com.ip_position.ipposition.entity.Provider;
 import org.springframework.data.repository.query.Param;
 
 public interface ProviderRepository extends JpaRepository<Provider, Long> {
-    @Query("SELECT p FROM Provider p WHERE p.isp = ?1")
-    Optional<Provider> findProviderByIsp(String isp);
+    @Query("SELECT p FROM Provider p WHERE p.internetServiceProvider = ?1")
+    Optional<Provider> findProviderByInternetServiceProvider(String internetServiceProvider);
 
-    @Query("SELECT p FROM Provider p WHERE p.isp = :#{#provider.isp} " +
-            "AND p.org = :#{#provider.org} " +
-            "AND p.asName = :#{#provider.asName}")
+    @Query("SELECT p FROM Provider p WHERE p.internetServiceProvider = :#{#provider.internetServiceProvider} " +
+            "AND p.organisation = :#{#provider.organisation} " +
+            "AND p.autonomusSystemName = :#{#provider.autonomusSystemName}")
     Optional<Provider> findProviderByAll(@Param("provider") Provider provider);
 
     @Query("SELECT COUNT(r) > 0 FROM IpInfo r WHERE r.provider.id = ?1")

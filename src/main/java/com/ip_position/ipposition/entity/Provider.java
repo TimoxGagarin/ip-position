@@ -24,9 +24,9 @@ public class Provider {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "provider_sequence")
     private Long id;
 
-    private String isp;
-    private String org;
-    private String asName;
+    private String internetServiceProvider;
+    private String organisation;
+    private String autonomusSystemName;
 
     @JsonIgnore
     @ManyToMany
@@ -38,22 +38,22 @@ public class Provider {
 
     public Provider(
             Long id,
-            String isp,
-            String org,
-            String asName) {
+            String internetServiceProvider,
+            String organisation,
+            String autonomusSystemName) {
         this.id = id;
-        this.isp = isp;
-        this.org = org;
-        this.asName = asName;
+        this.internetServiceProvider = internetServiceProvider;
+        this.organisation = organisation;
+        this.autonomusSystemName = autonomusSystemName;
     }
 
     public Provider(
-            String isp,
-            String org,
-            String asName) {
-        this.isp = isp;
-        this.org = org;
-        this.asName = asName;
+            String internetServiceProvider,
+            String organisation,
+            String autonomusSystemName) {
+        this.internetServiceProvider = internetServiceProvider;
+        this.organisation = organisation;
+        this.autonomusSystemName = autonomusSystemName;
     }
 
     public Long getId() {
@@ -64,28 +64,28 @@ public class Provider {
         this.id = id;
     }
 
-    public String getIsp() {
-        return this.isp;
+    public String getInternetServiceProvider() {
+        return this.internetServiceProvider;
     }
 
-    public void setIsp(String isp) {
-        this.isp = isp;
+    public void setInternetServiceProvider(String internetServiceProvider) {
+        this.internetServiceProvider = internetServiceProvider;
     }
 
-    public String getOrg() {
-        return this.org;
+    public String getOrganisation() {
+        return this.organisation;
     }
 
-    public void setOrg(String org) {
-        this.org = org;
+    public void setOrganisation(String organisation) {
+        this.organisation = organisation;
     }
 
-    public String getAsName() {
-        return this.asName;
+    public String getAutonomusSystemName() {
+        return this.autonomusSystemName;
     }
 
-    public void setAsName(String asName) {
-        this.asName = asName;
+    public void setAutonomusSystemName(String autonomusSystemName) {
+        this.autonomusSystemName = autonomusSystemName;
     }
 
     public Set<City> getCities() {
@@ -105,9 +105,9 @@ public class Provider {
     @Override
     public String toString() {
         return "Provider(id=" + this.id +
-                ", isp=" + this.isp +
-                ", org=" + this.org +
-                ", asName=" + this.asName + ")";
+                ", isp=" + this.internetServiceProvider +
+                ", org=" + this.organisation +
+                ", asName=" + this.autonomusSystemName + ")";
     }
 
     @Override
@@ -115,15 +115,15 @@ public class Provider {
         if (this == obj)
             return true;
         if (obj instanceof Provider other) {
-            return Objects.equals(this.isp, other.isp) &&
-                    Objects.equals(this.org, other.org) &&
-                    Objects.equals(this.asName, other.asName);
+            return Objects.equals(this.internetServiceProvider, other.internetServiceProvider) &&
+                    Objects.equals(this.organisation, other.organisation) &&
+                    Objects.equals(this.autonomusSystemName, other.autonomusSystemName);
         }
         return false;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(isp, org, asName);
+        return Objects.hash(internetServiceProvider, organisation, autonomusSystemName);
     }
 }
