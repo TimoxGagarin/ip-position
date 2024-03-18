@@ -167,16 +167,16 @@ public class City {
     public boolean equals(Object obj) {
         if (this == obj)
             return true;
-        if (obj instanceof City) {
-            City other = (City) obj;
-            return Objects.equals(this.country, other.country) &&
-                    Objects.equals(this.countryCode, other.countryCode) &&
-                    Objects.equals(this.region, other.region) &&
-                    Objects.equals(this.regionName, other.regionName) &&
-                    Objects.equals(this.name, other.name) &&
-                    Objects.equals(this.zip, other.zip);
-        }
-        return false;
+        if (!(obj instanceof City))
+            return false;
+
+        City other = (City) obj;
+        return Objects.equals(this.country, other.country) &&
+                Objects.equals(this.countryCode, other.countryCode) &&
+                Objects.equals(this.region, other.region) &&
+                Objects.equals(this.regionName, other.regionName) &&
+                Objects.equals(this.name, other.name) &&
+                Objects.equals(this.zip, other.zip);
     }
 
     @Override
