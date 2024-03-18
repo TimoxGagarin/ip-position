@@ -134,15 +134,15 @@ public class IpInfo {
     public boolean equals(Object obj) {
         if (this == obj)
             return true;
-        if (obj instanceof IpInfo) {
-            IpInfo other = (IpInfo) obj;
-            return Objects.equals(this.city, other.city) &&
-                    Objects.equals(this.provider, other.provider) &&
-                    Objects.equals(this.position, other.position) &&
-                    Objects.equals(this.timeZone, other.timeZone) &&
-                    Objects.equals(this.ip, other.ip);
-        }
-        return false;
+        if (!(obj instanceof IpInfo))
+            return false;
+        IpInfo other = (IpInfo) obj;
+        return Objects.equals(this.city, other.city) &&
+                Objects.equals(this.provider, other.provider) &&
+                Objects.equals(this.position, other.position) &&
+                Objects.equals(this.timeZone, other.timeZone) &&
+                Objects.equals(this.ip, other.ip);
+
     }
 
     @Override

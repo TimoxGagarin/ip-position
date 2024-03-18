@@ -77,15 +77,14 @@ public class Position {
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj) {
+        if (this == obj)
             return true;
-        }
-        if (obj instanceof Position) {
-            Position other = (Position) obj;
-            return Objects.equals(this.latitude, other.latitude) &&
-                    Objects.equals(this.longitude, other.longitude);
-        }
-        return false;
+        if (!(obj instanceof Position))
+            return false;
+        Position other = (Position) obj;
+        return Objects.equals(this.latitude, other.latitude) &&
+                Objects.equals(this.longitude, other.longitude);
+
     }
 
     @Override

@@ -121,13 +121,13 @@ public class Provider {
     public boolean equals(Object obj) {
         if (this == obj)
             return true;
-        if (obj instanceof Provider) {
-            Provider other = (Provider) obj;
-            return Objects.equals(this.internetServiceProvider, other.internetServiceProvider) &&
-                    Objects.equals(this.organisation, other.organisation) &&
-                    Objects.equals(this.autonomusSystemName, other.autonomusSystemName);
-        }
-        return false;
+        if (!(obj instanceof Provider))
+            return false;
+        Provider other = (Provider) obj;
+        return Objects.equals(this.internetServiceProvider, other.internetServiceProvider) &&
+                Objects.equals(this.organisation, other.organisation) &&
+                Objects.equals(this.autonomusSystemName, other.autonomusSystemName);
+
     }
 
     @Override
