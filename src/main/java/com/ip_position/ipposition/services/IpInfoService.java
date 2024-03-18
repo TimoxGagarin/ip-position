@@ -111,8 +111,6 @@ public class IpInfoService {
 
         ipInfoCity.addProvider(ipInfoProvider);
         ipInfoProvider.addCity(ipInfoCity);
-
-        logger.info(ipInfo.toString());
         if (ipInfoRepository.findIpInfo(ipInfo).isEmpty())
             ipInfoRepository.save(ipInfo);
     }
@@ -167,7 +165,7 @@ public class IpInfoService {
         if (!ipInfo.getTimeZone().equals(realIpInfo.getTimeZone())) {
             ipInfo.setTimeZone(realIpInfo.getTimeZone());
             logger.info(String.format("IpInfo with id=%d was updated field TimeZone on %s", ipInfoId,
-                    ipInfo.getTimeZone().toString()));
+                    ipInfo.getTimeZone()));
         }
         if (!ipInfo.getCity().equals(realIpInfo.getCity())) {
             ipInfo.setCity(cityService.addNewCity(realIpInfo.getCity()));

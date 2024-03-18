@@ -39,7 +39,7 @@ public class IpInfo {
     @Schema(required = true)
     private Provider provider;
 
-    @Schema(example = "1.1.1.1", required = true)
+    @Schema(example = "127.0.0.1", required = true)
     private String ip;
 
     public IpInfo() {
