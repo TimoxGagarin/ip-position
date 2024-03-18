@@ -1,6 +1,5 @@
 package com.ip_position.ipposition.services;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -42,7 +41,7 @@ public class IpInfoService {
     private RestTemplate restTemplate;
 
     public IpInfoService(IpInfoRepository ipInfoRepository, CityService cityService,
-            ProviderService providerService, PositionService positionService, HashMap<String, List<IpInfo>> cacheMap) {
+            ProviderService providerService, PositionService positionService, Map<String, List<IpInfo>> cacheMap) {
         this.ipInfoRepository = ipInfoRepository;
         this.cityService = cityService;
         this.providerService = providerService;
@@ -78,20 +77,19 @@ public class IpInfoService {
             return null;
         }
 
-        IpInfo result = new IpInfo(
+        return new IpInfo(
                 city,
                 new Position((Double) response.get("lat"), (Double) response.get("lon")),
                 response.get("timezone").toString(),
                 provider,
                 ip);
-        return result;
     }
 
     public List<IpInfo> findIpInfoFromDB(IpInfo ipInfo) {
-        String cacheKey = CacheConfig.ipInfoCache + ipInfo.toString();
+        String cacheKey = CacheConfig.IP_INFO_CACHE_START + ipInfo.toString();
         if (cacheMap.containsKey(cacheKey)) {
             logger.info(String.format("Cache %s value:\n%s", cacheKey, cacheMap.get(cacheKey).toString()));
-            return (List<IpInfo>) cacheMap.get(cacheKey);
+            return cacheMap.get(cacheKey);
         }
         List<IpInfo> result = ipInfoRepository.findIpInfo(ipInfo);
         cacheMap.put(cacheKey, result);

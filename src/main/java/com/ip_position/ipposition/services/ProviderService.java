@@ -1,6 +1,5 @@
 package com.ip_position.ipposition.services;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -21,7 +20,7 @@ public class ProviderService {
     @Autowired
     private Logger logger;
 
-    public ProviderService(ProviderRepository providerRepository, HashMap<String, List<Provider>> cacheMap) {
+    public ProviderService(ProviderRepository providerRepository, Map<String, List<Provider>> cacheMap) {
         this.providerRepository = providerRepository;
         this.cacheMap = cacheMap;
     }
@@ -37,7 +36,7 @@ public class ProviderService {
     }
 
     public List<Provider> findProviders(Provider provider) {
-        String providerCache = CacheConfig.providerCache + provider.toString();
+        String providerCache = CacheConfig.PROVIDER_CACHE_START + provider.toString();
         if (cacheMap.containsKey(providerCache)) {
             logger.info(String.format("Cache %s value:\n%s", providerCache, cacheMap.get(providerCache).toString()));
             return cacheMap.get(providerCache);

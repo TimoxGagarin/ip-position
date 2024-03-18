@@ -1,6 +1,5 @@
 package com.ip_position.ipposition.services;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -21,7 +20,7 @@ public class CityService {
     @Autowired
     private Logger logger;
 
-    public CityService(CityRepository cityRepository, HashMap<String, List<City>> cacheMap) {
+    public CityService(CityRepository cityRepository, Map<String, List<City>> cacheMap) {
         this.cityRepository = cityRepository;
         this.cacheMap = cacheMap;
     }
@@ -37,7 +36,7 @@ public class CityService {
     }
 
     public List<City> findCities(City city) {
-        String cacheKey = CacheConfig.cityCache + city.toString();
+        String cacheKey = CacheConfig.CITY_CACHE_START + city.toString();
         if (cacheMap.containsKey(cacheKey)) {
             logger.info(String.format("Cache %s value:\n%s", cacheKey, cacheMap.get(cacheKey).toString()));
             return cacheMap.get(cacheKey);
