@@ -6,6 +6,7 @@ import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -22,10 +23,16 @@ public class Provider {
     @Id
     @SequenceGenerator(name = "provider_sequence", sequenceName = "provider_sequence", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "provider_sequence")
+    @Schema(example = "1")
     private Long id;
 
+    @Schema(example = "Cloudflare, Inc", required = true)
     private String internetServiceProvider;
+
+    @Schema(example = "APNIC and Cloudflare DNS Resolver project", required = true)
     private String organisation;
+
+    @Schema(example = "AS13335 Cloudflare, Inc.", required = true)
     private String autonomusSystemName;
 
     @JsonIgnore
@@ -105,16 +112,17 @@ public class Provider {
     @Override
     public String toString() {
         return "Provider(id=" + this.id +
-                ", isp=" + this.internetServiceProvider +
-                ", org=" + this.organisation +
-                ", asName=" + this.autonomusSystemName + ")";
+                ", internetServiceProvider=" + this.internetServiceProvider +
+                ", organisation=" + this.organisation +
+                ", autonomusSystemName=" + this.autonomusSystemName + ")";
     }
 
     @Override
     public boolean equals(Object obj) {
         if (this == obj)
             return true;
-        if (obj instanceof Provider other) {
+        if (obj instanceof Provider) {
+            Provider other = (Provider) obj;
             return Objects.equals(this.internetServiceProvider, other.internetServiceProvider) &&
                     Objects.equals(this.organisation, other.organisation) &&
                     Objects.equals(this.autonomusSystemName, other.autonomusSystemName);

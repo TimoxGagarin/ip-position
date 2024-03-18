@@ -6,6 +6,7 @@ import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -20,13 +21,25 @@ public class City {
     @Id
     @SequenceGenerator(name = "city_sequence", sequenceName = "city_sequence", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "city_sequence")
+    @Schema(example = "1")
     private Long id;
 
+    @Schema(example = "Australia", required = true)
     private String country;
+
+    @Schema(example = "AU", required = true)
     private String countryCode;
+
+    @Schema(example = "QLD", required = true)
     private String region;
+
+    @Schema(example = "Queensland", required = true)
     private String regionName;
+
+    @Schema(example = "South Brisbane", required = true)
     private String name;
+
+    @Schema(example = "4101", required = true)
     private String zip;
 
     @JsonIgnore
@@ -154,7 +167,8 @@ public class City {
     public boolean equals(Object obj) {
         if (this == obj)
             return true;
-        if (obj instanceof City other) {
+        if (obj instanceof City) {
+            City other = (City) obj;
             return Objects.equals(this.country, other.country) &&
                     Objects.equals(this.countryCode, other.countryCode) &&
                     Objects.equals(this.region, other.region) &&

@@ -1,9 +1,12 @@
 package com.ip_position.ipposition.services;
 
-import java.util.Optional;
-import java.util.logging.Level;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 
 import com.ip_position.ipposition.entity.Provider;
@@ -11,40 +14,47 @@ import com.ip_position.ipposition.repositories.ProviderRepository;
 
 @Service
 public class ProviderService {
-    private ProviderRepository providerRepository;
+    private final ProviderRepository providerRepository;
+    private final Map<String, List<Provider>> cacheMap;
+
+    @Autowired
     private Logger logger;
 
-    public ProviderService(ProviderRepository providerRepository, Logger logger) {
+    public ProviderService(ProviderRepository providerRepository, HashMap<String, List<Provider>> cacheMap) {
         this.providerRepository = providerRepository;
-        this.logger = logger;
+        this.cacheMap = cacheMap;
     }
 
     public Provider addNewProvider(Provider provider) {
-        logger.log(Level.INFO, "{0} was added into table Provider", provider.toString().replaceAll("[\n\r]", "_"));
-
-        Optional<Provider> existingProvider = providerRepository.findProviderByAll(provider);
-        if (!existingProvider.isPresent()) {
+        List<Provider> existingProvider = providerRepository.findProvider(provider);
+        if (existingProvider.isEmpty()) {
+            cacheMap.clear();
             providerRepository.save(provider);
             return provider;
         }
-        return existingProvider.get();
+        return existingProvider.get(0);
     }
 
-    public Provider findProviderByIsp(String providerIsp) {
-        Optional<Provider> provider = providerRepository.findProviderByInternetServiceProvider(providerIsp);
-        if (provider.isPresent())
-            return provider.get();
-        return null;
+    public List<Provider> findProviders(Provider provider) {
+        if (cacheMap.containsKey("findProviders_" + provider.toString())) {
+            logger.info(String.format("Cache findProviders_%s value:\n%s", "findProviders_" + provider.toString(),
+                    cacheMap.get("findProviders_" + provider.toString()).toString()));
+            return cacheMap.get("findProviders_" + provider.toString());
+        }
+        List<Provider> result = providerRepository.findProvider(provider);
+        cacheMap.put("findProviders_" + provider.toString(), result);
+        return result;
     }
 
-    public void deleteProvider(Long providerId) {
+    public void deleteProvider(@NonNull Long providerId) {
         boolean hasReferences = providerRepository.hasReferences(providerId);
 
         if (hasReferences) {
-            throw new IllegalStateException("provider with id " + providerId + " does not exists or has references");
+            throw new IllegalStateException("Provider with id " + providerId + " does not exists or has references");
         }
+
+        cacheMap.clear();
         providerRepository.clearRelations(providerId);
         providerRepository.deleteById(providerId);
-        logger.log(Level.INFO, "Provider with id={0} was deleted from table Provider", providerId);
     }
 }

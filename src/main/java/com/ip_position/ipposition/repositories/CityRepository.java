@@ -1,28 +1,27 @@
 package com.ip_position.ipposition.repositories;
 
-import org.springframework.stereotype.Repository;
-
-import com.ip_position.ipposition.entity.City;
-
-import java.util.Optional;
+import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
+
+import com.ip_position.ipposition.entity.City;
 
 @Repository
 public interface CityRepository extends JpaRepository<City, Long> {
-    @Query("SELECT c FROM City c WHERE c.name = ?1")
-    Optional<City> findCityByCityName(String cityName);
 
-    @Query("SELECT c FROM City c WHERE c.country = :#{#city.country} " +
-            "AND c.countryCode = :#{#city.countryCode} " +
-            "AND c.region = :#{#city.region} " +
-            "AND c.regionName = :#{#city.regionName} " +
-            "AND c.name = :#{#city.name} " +
-            "AND c.zip = :#{#city.zip}")
-    Optional<City> findCityByAll(@Param("city") City city);
+    @Query("SELECT c FROM City c WHERE " +
+            "(:#{#city.id} IS NULL OR c.id = :#{#city.id}) AND " +
+            "(:#{#city.country} IS NULL OR c.country = :#{#city.country}) AND " +
+            "(:#{#city.countryCode} IS NULL OR c.countryCode = :#{#city.countryCode}) AND " +
+            "(:#{#city.region} IS NULL OR c.region = :#{#city.region}) AND " +
+            "(:#{#city.regionName} IS NULL OR c.regionName = :#{#city.regionName}) AND " +
+            "(:#{#city.name} IS NULL OR c.name = :#{#city.name}) AND " +
+            "(:#{#city.zip} IS NULL OR c.zip = :#{#city.zip})")
+    List<City> findCity(@Param("city") City city);
 
     @Query("SELECT COUNT(r) > 0 FROM IpInfo r WHERE r.city.id = ?1")
     boolean hasReferences(Long cityId);

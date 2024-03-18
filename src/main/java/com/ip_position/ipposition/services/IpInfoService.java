@@ -1,16 +1,17 @@
 package com.ip_position.ipposition.services;
 
-import java.util.HashSet;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
-import java.util.Set;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -19,50 +20,42 @@ import com.ip_position.ipposition.entity.IpInfo;
 import com.ip_position.ipposition.entity.Position;
 import com.ip_position.ipposition.entity.Provider;
 import com.ip_position.ipposition.repositories.IpInfoRepository;
-import com.ip_position.ipposition.validators.IpValidator;
 
 import jakarta.transaction.Transactional;
 
 @Service
 public class IpInfoService {
 
+    private static final String IP_INFO_DOESNT_EXIST = "IpInfo with ip %s does not exists";
+
     private final IpInfoRepository ipInfoRepository;
     private final CityService cityService;
     private final ProviderService providerService;
     private final PositionService positionService;
+    private final Map<String, List<IpInfo>> cacheMap;
+
+    @Autowired
     private Logger logger;
-    private final RestTemplate restTemplate;
-    private final IpValidator ipValidator;
 
-    public IpInfoService(IpInfoRepository ipInfoRepository, RestTemplate restTemplate, Logger logger,
-            IpValidator ipValidator, CityService cityService, ProviderService providerService,
-            PositionService positionService) {
+    @Autowired
+    private RestTemplate restTemplate;
+
+    public IpInfoService(IpInfoRepository ipInfoRepository, CityService cityService,
+            ProviderService providerService, PositionService positionService, HashMap<String, List<IpInfo>> cacheMap) {
         this.ipInfoRepository = ipInfoRepository;
-
-        this.restTemplate = restTemplate;
-        this.logger = logger;
-        this.ipValidator = ipValidator;
         this.cityService = cityService;
         this.providerService = providerService;
         this.positionService = positionService;
-    }
-
-    private static final String IP_INFO_DOESNT_EXIST = "IpInfo with ip %s does not exists";
-
-    public List<IpInfo> getIpsInfo() {
-        return ipInfoRepository.findAll();
+        this.cacheMap = cacheMap;
     }
 
     public IpInfo getIpInfoFromAPI(String ip) {
-        if (!ipValidator.isValidIPAddress(ip))
-            throw new IllegalStateException(String.format(IP_INFO_DOESNT_EXIST, ip));
-
         String endpoint = "http://ip-api.com/json/" + ip;
         ResponseEntity<Map<String, Object>> responseEntity = restTemplate.exchange(
                 endpoint,
-                HttpMethod.GET,
+                Objects.requireNonNull(HttpMethod.GET),
                 null,
-                new ParameterizedTypeReference<Map<String, Object>>() {
+                new ParameterizedTypeReference<>() {
                 });
         Map<String, Object> response = responseEntity.getBody();
         City city;
@@ -90,39 +83,47 @@ public class IpInfoService {
                 response.get("timezone").toString(),
                 provider,
                 ip);
-        logger.log(Level.INFO, "{0} was added into table IpInfo", result);
         return result;
     }
 
-    public IpInfo getIpInfoFromDB(String ip) {
-        if (!ipValidator.isValidIPAddress(ip))
-            throw new IllegalStateException(String.format(IP_INFO_DOESNT_EXIST, ip));
-
-        return ipInfoRepository.findResponseByIP(ip).orElseThrow(() -> new IllegalStateException(
-                String.format("IpInfo with ip %s does not exists in database", ip)));
+    public List<IpInfo> findIpInfoFromDB(IpInfo ipInfo) {
+        if (cacheMap.containsKey("findIpInfoFromDB_" + ipInfo.toString())) {
+            logger.info(String.format("Cache findIpInfoFromDB_%s value:\n%s", "findIpInfoFromDB_" + ipInfo.toString(),
+                    cacheMap.get("findIpInfoFromDB_" + ipInfo.toString()).toString()));
+            return (List<IpInfo>) cacheMap.get("findIpInfoFromDB_" + ipInfo.toString());
+        }
+        List<IpInfo> result = ipInfoRepository.findIpInfo(ipInfo);
+        cacheMap.put("findIpInfoFromDB_" + ipInfo.toString(), result);
+        return ipInfoRepository.findIpInfo(ipInfo);
     }
 
     public void addNewIpInfo(IpInfo ipInfo) {
-        City ipInfoCity = ipInfo.getCity();
-        Provider ipInfoProvider = ipInfo.getProvider();
-        Position ipInfoPosition = ipInfo.getPosition();
+        cacheMap.clear();
+
+        City ipInfoCity = cityService.addNewCity(ipInfo.getCity());
+        Provider ipInfoProvider = providerService.addNewProvider(ipInfo.getProvider());
+        Position ipInfoPosition = positionService.addNewPosition(ipInfo.getPosition());
+
+        ipInfo.setCity(ipInfoCity);
+        ipInfo.setProvider(ipInfoProvider);
+        ipInfo.setPosition(ipInfoPosition);
 
         ipInfoCity.addProvider(ipInfoProvider);
         ipInfoProvider.addCity(ipInfoCity);
 
-        ipInfo.setCity(cityService.addNewCity(ipInfoCity));
-        ipInfo.setProvider(providerService.addNewProvider(ipInfoProvider));
-        ipInfo.setPosition(positionService.addNewPosition(ipInfoPosition));
-
-        if (!ipInfoRepository.findResponseByIP(ipInfo.getIp()).isPresent())
+        logger.info(ipInfo.toString());
+        if (ipInfoRepository.findIpInfo(ipInfo).isEmpty())
             ipInfoRepository.save(ipInfo);
     }
 
-    public void deleteIpInfo(Long ipInfoId) {
+    @Transactional
+    public void deleteIpInfo(@NonNull Long ipInfoId) {
         Optional<IpInfo> ipInfo = ipInfoRepository.findById(ipInfoId);
 
-        if (!ipInfo.isPresent())
+        if (ipInfo.isEmpty())
             throw new IllegalStateException(String.format(IP_INFO_DOESNT_EXIST, ipInfoId));
+
+        cacheMap.clear();
 
         City city = ipInfo.get().getCity();
         Provider provider = ipInfo.get().getProvider();
@@ -131,75 +132,65 @@ public class IpInfoService {
 
         try {
             provider.removeCity(city);
-            cityService.deleteCity(city.getId());
+            cityService.deleteCity(Objects.requireNonNull(city.getId()));
         } catch (IllegalStateException exception) {
             logger.warning(exception.getMessage());
         }
         try {
             city.removeProvider(provider);
-            providerService.deleteProvider(provider.getId());
+            providerService.deleteProvider(Objects.requireNonNull(provider.getId()));
         } catch (IllegalStateException exception) {
             logger.warning(exception.getMessage());
         }
         try {
-            positionService.deletePosition(position.getId());
+            positionService.deletePosition(Objects.requireNonNull(position.getId()));
 
         } catch (IllegalStateException exception) {
             logger.warning(exception.getMessage());
         }
-
-        logger.log(Level.INFO, "IpInfo with id={0} was deleted from table IpInfo", ipInfoId);
     }
 
     @Transactional
-    public void updateIpInfo(Long ipInfoId) {
+    public void updateIpInfo(@NonNull Long ipInfoId) {
         IpInfo ipInfo = ipInfoRepository.findById(ipInfoId).orElseThrow(() -> new IllegalStateException(
-                String.format("IpInfo with id %ld does not exists", ipInfoId)));
+                String.format("IpInfo with id %d does not exists", ipInfoId)));
+
+        cacheMap.clear();
 
         IpInfo realIpInfo = getIpInfoFromAPI(ipInfo.getIp());
 
+        City prevCity = ipInfo.getCity();
+        Provider prevProvider = ipInfo.getProvider();
+        Position prevPosition = ipInfo.getPosition();
+
         if (!ipInfo.getTimeZone().equals(realIpInfo.getTimeZone())) {
             ipInfo.setTimeZone(realIpInfo.getTimeZone());
-            logger.log(Level.INFO, "IpInfo with id={0} was updated field TimeZone on {1}",
-                    new Object[] { ipInfoId, ipInfo.getTimeZone() });
+            logger.info(String.format("IpInfo with id=%d was updated field TimeZone on %s", ipInfoId,
+                    ipInfo.getTimeZone().toString()));
         }
         if (!ipInfo.getCity().equals(realIpInfo.getCity())) {
-            Long cityId = ipInfo.getCity().getId();
             ipInfo.setCity(cityService.addNewCity(realIpInfo.getCity()));
-            logger.log(Level.INFO, "IpInfo with id={0} was updated field City on {1}",
-                    new Object[] { ipInfoId, ipInfo.getCity() });
-            if (ipInfoRepository.findAllByCityId(cityId).isEmpty())
-                cityService.deleteCity(cityId);
+            logger.info(String.format("IpInfo with id=%d was updated field City on %s", ipInfoId,
+                    ipInfo.getCity().toString()));
+            IpInfo filter = new IpInfo(null, prevCity, null, null, null, null);
+            if (ipInfoRepository.findIpInfo(filter).isEmpty())
+                cityService.deleteCity(Objects.requireNonNull(prevCity.getId()));
         }
         if (!ipInfo.getProvider().equals(realIpInfo.getProvider())) {
-            Long providerId = ipInfo.getProvider().getId();
             ipInfo.setProvider(providerService.addNewProvider(realIpInfo.getProvider()));
-            logger.log(Level.INFO, "IpInfo with id={0} was updated field Provider on {1}",
-                    new Object[] { ipInfoId, ipInfo.getPosition() });
-            if (ipInfoRepository.findAllByProviderId(providerId).isEmpty())
-                providerService.deleteProvider(providerId);
+            logger.info(String.format("IpInfo with id=%d was updated field Provider on %s", ipInfoId,
+                    ipInfo.getProvider().toString()));
+            IpInfo filter = new IpInfo(null, null, null, null, prevProvider, null);
+            if (ipInfoRepository.findIpInfo(filter).isEmpty())
+                providerService.deleteProvider(Objects.requireNonNull(prevProvider.getId()));
         }
         if (!ipInfo.getPosition().equals(realIpInfo.getPosition())) {
-            Long positionId = ipInfo.getPosition().getId();
             ipInfo.setPosition(positionService.addNewPosition(realIpInfo.getPosition()));
-            logger.log(Level.INFO, "IpInfo with id={0} was updated field Position on {1}",
-                    new Object[] { ipInfoId, ipInfo.getPosition() });
-            if (ipInfoRepository.findAllByPositionId(positionId).isEmpty())
-                positionService.deletePosition(positionId);
+            logger.info(String.format("IpInfo with id=%d was updated field Position on %s", ipInfoId,
+                    ipInfo.getPosition().toString()));
+            IpInfo filter = new IpInfo(null, null, prevPosition, null, null, null);
+            if (ipInfoRepository.findIpInfo(filter).isEmpty())
+                positionService.deletePosition(Objects.requireNonNull(prevPosition.getId()));
         }
-    }
-
-    public Set<City> getCitiesOfProvider(String providerIsp) {
-        Provider provider = providerService.findProviderByIsp(providerIsp);
-        if (provider != null)
-            return provider.getCities();
-        return new HashSet<>();
-    }
-
-    public Set<Provider> getProvidersOfCity(String cityName) {
-        City city = cityService.findCityByName(cityName);
-        if (city != null)
-            return city.getProviders();
-        return new HashSet<>();
     }
 }

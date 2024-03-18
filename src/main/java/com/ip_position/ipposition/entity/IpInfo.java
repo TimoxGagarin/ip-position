@@ -2,6 +2,7 @@ package com.ip_position.ipposition.entity;
 
 import java.util.Objects;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -17,22 +18,28 @@ public class IpInfo {
     @Id
     @SequenceGenerator(name = "ipinfo_sequence", sequenceName = "ipinfo_sequence", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "ipinfo_sequence")
+    @Schema(example = "1")
     private Long id;
 
     @ManyToOne
     @JoinColumn(name = "city_id")
+    @Schema(required = true)
     private City city;
 
     @ManyToOne
     @JoinColumn(name = "position_id")
+    @Schema(required = true)
     private Position position;
 
+    @Schema(example = "Australia/Brisbane", required = true)
     private String timeZone;
 
     @ManyToOne
     @JoinColumn(name = "provider_id")
+    @Schema(required = true)
     private Provider provider;
 
+    @Schema(example = "1.1.1.1", required = true)
     private String ip;
 
     public IpInfo() {
@@ -127,7 +134,8 @@ public class IpInfo {
     public boolean equals(Object obj) {
         if (this == obj)
             return true;
-        if (obj instanceof IpInfo other) {
+        if (obj instanceof IpInfo) {
+            IpInfo other = (IpInfo) obj;
             return Objects.equals(this.city, other.city) &&
                     Objects.equals(this.provider, other.provider) &&
                     Objects.equals(this.position, other.position) &&

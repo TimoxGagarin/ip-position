@@ -1,13 +1,13 @@
 package com.ip_position.ipposition.configs;
 
-import java.util.logging.Logger;
-
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
-import com.ip_position.ipposition.validators.IpValidator;
+import com.ip_position.ipposition.dto.IpInfoDTO;
 
+@EnableWebMvc
 @Configuration
 public class IpInfoConfig {
 
@@ -17,12 +17,7 @@ public class IpInfoConfig {
     }
 
     @Bean
-    public Logger logger() {
-        return Logger.getLogger(getClass().getName());
-    }
-
-    @Bean
-    public IpValidator ipValidator() {
-        return new IpValidator();
+    public IpInfoDTO ipValidator() {
+        return new IpInfoDTO();
     }
 }

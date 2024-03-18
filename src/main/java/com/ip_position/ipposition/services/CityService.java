@@ -1,9 +1,12 @@
 package com.ip_position.ipposition.services;
 
-import java.util.Optional;
-import java.util.logging.Level;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 
 import com.ip_position.ipposition.entity.City;
@@ -12,38 +15,46 @@ import com.ip_position.ipposition.repositories.CityRepository;
 @Service
 public class CityService {
     private final CityRepository cityRepository;
+    private final Map<String, List<City>> cacheMap;
+
+    @Autowired
     private Logger logger;
 
-    public CityService(CityRepository cityRepository, Logger logger) {
+    public CityService(CityRepository cityRepository, HashMap<String, List<City>> cacheMap) {
         this.cityRepository = cityRepository;
-        this.logger = logger;
+        this.cacheMap = cacheMap;
     }
 
     public City addNewCity(City city) {
-        logger.log(Level.INFO, "{0} was added into table City", city.toString().replaceAll("[\n\r]", "_"));
-        Optional<City> existingCity = cityRepository.findCityByAll(city);
-        if (existingCity.isEmpty()) {
+        List<City> cityList = cityRepository.findCity(city);
+        if (cityList.isEmpty()) {
+            cacheMap.clear();
             cityRepository.save(city);
             return city;
         }
-        return existingCity.get();
+        return cityList.get(0);
     }
 
-    public City findCityByName(String cityName) {
-        Optional<City> city = cityRepository.findCityByCityName(cityName);
-        if (city.isPresent())
-            return city.get();
-        return null;
+    public List<City> findCities(City city) {
+        if (cacheMap.containsKey("findCities_" + city.toString())) {
+            logger.info(String.format("Cache findCities_%s value:\n%s", "findCities_" + city.toString(),
+                    cacheMap.get("findCities_" + city.toString()).toString()));
+            return cacheMap.get("findCities_" + city.toString());
+        }
+        List<City> result = cityRepository.findCity(city);
+        cacheMap.put("findCities_" + city.toString(), result);
+        return result;
     }
 
-    public void deleteCity(Long cityId) {
+    public void deleteCity(@NonNull Long cityId) {
         boolean hasReferences = cityRepository.hasReferences(cityId);
 
         if (hasReferences) {
             throw new IllegalStateException("City with id " + cityId + " does not exists or has references");
         }
+
+        cacheMap.clear();
         cityRepository.clearRelations(cityId);
         cityRepository.deleteById(cityId);
-        logger.log(Level.INFO, "City with id={0} was deleted from table City", cityId);
     }
 }

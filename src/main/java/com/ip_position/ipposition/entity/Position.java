@@ -2,6 +2,7 @@ package com.ip_position.ipposition.entity;
 
 import java.util.Objects;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -16,9 +17,12 @@ public class Position {
     @Id
     @SequenceGenerator(name = "position_sequence", sequenceName = "position_sequence", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "position_sequence")
+    @Schema(example = "1")
     private Long id;
 
+    @Schema(example = "-27.4766", required = true)
     private Double latitude;
+    @Schema(example = "153.0166", required = true)
     private Double longitude;
 
     public Position() {
@@ -73,9 +77,11 @@ public class Position {
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
+        if (this == obj) {
             return true;
-        if (obj instanceof Position other) {
+        }
+        if (obj instanceof Position) {
+            Position other = (Position) obj;
             return Objects.equals(this.latitude, other.latitude) &&
                     Objects.equals(this.longitude, other.longitude);
         }
