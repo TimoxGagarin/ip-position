@@ -6,7 +6,6 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.logging.Logger;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import com.ip_position.ipposition.configs.CacheConfig;
+import com.ip_position.ipposition.dto.IpInfoDTO;
 import com.ip_position.ipposition.entity.City;
 import com.ip_position.ipposition.entity.IpInfo;
 import com.ip_position.ipposition.entity.Position;
@@ -33,23 +33,25 @@ public class IpInfoService {
     private final ProviderService providerService;
     private final PositionService positionService;
     private final Map<String, List<IpInfo>> cacheMap;
-
-    @Autowired
-    private Logger logger;
-
-    @Autowired
-    private RestTemplate restTemplate;
+    private final Logger logger;
+    private final RestTemplate restTemplate;
 
     public IpInfoService(IpInfoRepository ipInfoRepository, CityService cityService,
-            ProviderService providerService, PositionService positionService, Map<String, List<IpInfo>> cacheMap) {
+            ProviderService providerService, PositionService positionService, Map<String, List<IpInfo>> cacheMap,
+            Logger logger, RestTemplate restTemplate) {
         this.ipInfoRepository = ipInfoRepository;
         this.cityService = cityService;
         this.providerService = providerService;
         this.positionService = positionService;
         this.cacheMap = cacheMap;
+        this.logger = logger;
+        this.restTemplate = restTemplate;
     }
 
     public IpInfo getIpInfoFromAPI(String ip) {
+        if (!ip.matches(IpInfoDTO.IP_REGEX)) {
+            throw new IllegalStateException("Not valid ip");
+        }
         String endpoint = "http://ip-api.com/json/" + ip;
         ResponseEntity<Map<String, Object>> responseEntity = restTemplate.exchange(
                 endpoint,
@@ -88,7 +90,7 @@ public class IpInfoService {
     public List<IpInfo> findIpInfoFromDB(IpInfo ipInfo) {
         String cacheKey = CacheConfig.IP_INFO_CACHE_START + ipInfo.toString();
         if (cacheMap.containsKey(cacheKey)) {
-            logger.info(String.format("Cache %s value:\n%s", cacheKey, cacheMap.get(cacheKey).toString()));
+            logger.info(String.format("Cache %s value:%n%s", cacheKey, cacheMap.get(cacheKey).toString()));
             return cacheMap.get(cacheKey);
         }
         List<IpInfo> result = ipInfoRepository.findIpInfo(ipInfo);

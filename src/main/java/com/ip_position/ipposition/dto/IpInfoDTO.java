@@ -17,7 +17,7 @@ public class IpInfoDTO {
     private static final String GROUP_REGEX = "[0-9a-fA-F]{1,4}";
     private static final String IPV6_REGEX = "^" + GROUP_REGEX + ":(?:" + GROUP_REGEX + ":){6}" + GROUP_REGEX + "$";
 
-    private static final String IP_REGEX = "(" + IPV4_REGEX + ")|(" + IPV6_REGEX + ")";
+    public static final String IP_REGEX = "(" + IPV4_REGEX + ")|(" + IPV6_REGEX + ")";
 
     @Pattern(regexp = IP_REGEX, message = "Invalid IP address format")
     @Schema(description = "DTO representing IP details")

@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 
@@ -16,13 +15,12 @@ import com.ip_position.ipposition.repositories.CityRepository;
 public class CityService {
     private final CityRepository cityRepository;
     private final Map<String, List<City>> cacheMap;
+    private final Logger logger;
 
-    @Autowired
-    private Logger logger;
-
-    public CityService(CityRepository cityRepository, Map<String, List<City>> cacheMap) {
+    public CityService(CityRepository cityRepository, Map<String, List<City>> cacheMap, Logger logger) {
         this.cityRepository = cityRepository;
         this.cacheMap = cacheMap;
+        this.logger = logger;
     }
 
     public City addNewCity(City city) {
@@ -38,7 +36,7 @@ public class CityService {
     public List<City> findCities(City city) {
         String cacheKey = CacheConfig.CITY_CACHE_START + city.toString();
         if (cacheMap.containsKey(cacheKey)) {
-            logger.info(String.format("Cache %s value:\n%s", cacheKey, cacheMap.get(cacheKey).toString()));
+            logger.info(String.format("Cache %s value:%n%s", cacheKey, cacheMap.get(cacheKey).toString()));
             return cacheMap.get(cacheKey);
         }
         List<City> result = cityRepository.findCity(city);

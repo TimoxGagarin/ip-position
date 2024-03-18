@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 
@@ -17,13 +16,12 @@ public class PositionService {
 
     private final PositionRepository positionRepository;
     private final Map<String, List<Position>> cacheMap;
+    private final Logger logger;
 
-    @Autowired
-    private Logger logger;
-
-    public PositionService(PositionRepository positionRepository, Map<String, List<Position>> cacheMap) {
+    public PositionService(PositionRepository positionRepository, Map<String, List<Position>> cacheMap, Logger logger) {
         this.positionRepository = positionRepository;
         this.cacheMap = cacheMap;
+        this.logger = logger;
     }
 
     public Position addNewPosition(Position position) {
@@ -39,7 +37,7 @@ public class PositionService {
     public List<Position> findPositions(Position position) {
         String cacheKey = CacheConfig.POSITION_CACHE_START + position.toString();
         if (cacheMap.containsKey(cacheKey)) {
-            logger.info(String.format("Cache %s value:\n%s", cacheKey,
+            logger.info(String.format("Cache %s value:%n%s", cacheKey,
                     cacheMap.get(cacheKey).toString()));
             return cacheMap.get(cacheKey);
         }

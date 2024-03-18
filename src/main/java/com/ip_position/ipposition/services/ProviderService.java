@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 
@@ -16,13 +15,12 @@ import com.ip_position.ipposition.repositories.ProviderRepository;
 public class ProviderService {
     private final ProviderRepository providerRepository;
     private final Map<String, List<Provider>> cacheMap;
+    private final Logger logger;
 
-    @Autowired
-    private Logger logger;
-
-    public ProviderService(ProviderRepository providerRepository, Map<String, List<Provider>> cacheMap) {
+    public ProviderService(ProviderRepository providerRepository, Map<String, List<Provider>> cacheMap, Logger logger) {
         this.providerRepository = providerRepository;
         this.cacheMap = cacheMap;
+        this.logger = logger;
     }
 
     public Provider addNewProvider(Provider provider) {
@@ -38,7 +36,7 @@ public class ProviderService {
     public List<Provider> findProviders(Provider provider) {
         String providerCache = CacheConfig.PROVIDER_CACHE_START + provider.toString();
         if (cacheMap.containsKey(providerCache)) {
-            logger.info(String.format("Cache %s value:\n%s", providerCache, cacheMap.get(providerCache).toString()));
+            logger.info(String.format("Cache %s value:%n%s", providerCache, cacheMap.get(providerCache).toString()));
             return cacheMap.get(providerCache);
         }
         List<Provider> result = providerRepository.findProvider(provider);
