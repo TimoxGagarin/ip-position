@@ -36,7 +36,7 @@ public class CityService {
     public List<City> findCities(City city) {
         String cacheKey = CacheConfig.CITY_CACHE_START + city.toString();
         if (cacheMap.containsKey(cacheKey)) {
-            logger.info(String.format("Cache %s value:%n%s", cacheKey, cacheMap.get(cacheKey).toString()));
+            logger.info(() -> String.format("Cache %s value:%n%s", cacheKey, cacheMap.get(cacheKey).toString()));
             return cacheMap.get(cacheKey);
         }
         List<City> result = cityRepository.findCity(city);

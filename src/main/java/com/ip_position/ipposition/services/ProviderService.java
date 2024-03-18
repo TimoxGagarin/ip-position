@@ -36,7 +36,8 @@ public class ProviderService {
     public List<Provider> findProviders(Provider provider) {
         String providerCache = CacheConfig.PROVIDER_CACHE_START + provider.toString();
         if (cacheMap.containsKey(providerCache)) {
-            logger.info(String.format("Cache %s value:%n%s", providerCache, cacheMap.get(providerCache).toString()));
+            logger.info(
+                    () -> String.format("Cache %s value:%n%s", providerCache, cacheMap.get(providerCache).toString()));
             return cacheMap.get(providerCache);
         }
         List<Provider> result = providerRepository.findProvider(provider);

@@ -37,8 +37,7 @@ public class PositionService {
     public List<Position> findPositions(Position position) {
         String cacheKey = CacheConfig.POSITION_CACHE_START + position.toString();
         if (cacheMap.containsKey(cacheKey)) {
-            logger.info(String.format("Cache %s value:%n%s", cacheKey,
-                    cacheMap.get(cacheKey).toString()));
+            logger.info(() -> String.format("Cache %s value:%n%s", cacheKey, cacheMap.get(cacheKey).toString()));
             return cacheMap.get(cacheKey);
         }
 

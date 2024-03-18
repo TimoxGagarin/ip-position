@@ -90,7 +90,7 @@ public class IpInfoService {
     public List<IpInfo> findIpInfoFromDB(IpInfo ipInfo) {
         String cacheKey = CacheConfig.IP_INFO_CACHE_START + ipInfo.toString();
         if (cacheMap.containsKey(cacheKey)) {
-            logger.info(String.format("Cache %s value:%n%s", cacheKey, cacheMap.get(cacheKey).toString()));
+            logger.info(() -> String.format("Cache %s value:%n%s", cacheKey, cacheMap.get(cacheKey).toString()));
             return cacheMap.get(cacheKey);
         }
         List<IpInfo> result = ipInfoRepository.findIpInfo(ipInfo);
@@ -164,12 +164,12 @@ public class IpInfoService {
 
         if (!ipInfo.getTimeZone().equals(realIpInfo.getTimeZone())) {
             ipInfo.setTimeZone(realIpInfo.getTimeZone());
-            logger.info(String.format("IpInfo with id=%d was updated field TimeZone on %s", ipInfoId,
+            logger.info(() -> String.format("IpInfo with id=%d was updated field TimeZone on %s", ipInfoId,
                     ipInfo.getTimeZone()));
         }
         if (!ipInfo.getCity().equals(realIpInfo.getCity())) {
             ipInfo.setCity(cityService.addNewCity(realIpInfo.getCity()));
-            logger.info(String.format("IpInfo with id=%d was updated field City on %s", ipInfoId,
+            logger.info(() -> String.format("IpInfo with id=%d was updated field City on %s", ipInfoId,
                     ipInfo.getCity().toString()));
             IpInfo filter = new IpInfo(null, prevCity, null, null, null, null);
             if (ipInfoRepository.findIpInfo(filter).isEmpty())
@@ -177,7 +177,7 @@ public class IpInfoService {
         }
         if (!ipInfo.getProvider().equals(realIpInfo.getProvider())) {
             ipInfo.setProvider(providerService.addNewProvider(realIpInfo.getProvider()));
-            logger.info(String.format("IpInfo with id=%d was updated field Provider on %s", ipInfoId,
+            logger.info(() -> String.format("IpInfo with id=%d was updated field Provider on %s", ipInfoId,
                     ipInfo.getProvider().toString()));
             IpInfo filter = new IpInfo(null, null, null, null, prevProvider, null);
             if (ipInfoRepository.findIpInfo(filter).isEmpty())
@@ -185,7 +185,7 @@ public class IpInfoService {
         }
         if (!ipInfo.getPosition().equals(realIpInfo.getPosition())) {
             ipInfo.setPosition(positionService.addNewPosition(realIpInfo.getPosition()));
-            logger.info(String.format("IpInfo with id=%d was updated field Position on %s", ipInfoId,
+            logger.info(() -> String.format("IpInfo with id=%d was updated field Position on %s", ipInfoId,
                     ipInfo.getPosition().toString()));
             IpInfo filter = new IpInfo(null, null, prevPosition, null, null, null);
             if (ipInfoRepository.findIpInfo(filter).isEmpty())
