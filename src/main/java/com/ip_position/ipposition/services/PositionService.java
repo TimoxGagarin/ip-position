@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 
+import com.ip_position.ipposition.configs.CacheConfig;
 import com.ip_position.ipposition.entity.Position;
 import com.ip_position.ipposition.repositories.PositionRepository;
 
@@ -30,9 +31,6 @@ public class PositionService {
         List<Position> positionList = positionRepository.findPosition(position);
         if (positionList.isEmpty()) {
             cacheMap.clear();
-            logger.info(
-                    String.format("Entity %s was added into table Position",
-                            position.toString().replaceAll("[\n\r]", "_")));
             positionRepository.save(position);
             return position;
         }
@@ -40,14 +38,15 @@ public class PositionService {
     }
 
     public List<Position> findPositions(Position position) {
-        if (cacheMap.containsKey("findPositions_" + position.toString())) {
-            logger.info(String.format("Cache findPositions_%s value:\n%s", "findPositions_" + position.toString(),
-                    cacheMap.get("findPositions_" + position.toString()).toString()));
-            return cacheMap.get("findPositions_" + position.toString());
+        String cacheKey = CacheConfig.positionCache + position.toString();
+        if (cacheMap.containsKey(cacheKey)) {
+            logger.info(String.format("Cache %s value:\n%s", cacheKey,
+                    cacheMap.get(cacheKey).toString()));
+            return cacheMap.get(cacheKey);
         }
 
         List<Position> result = positionRepository.findPosition(position);
-        cacheMap.put("findPositions_" + position.toString(), result);
+        cacheMap.put(cacheKey, result);
         return result;
     }
 

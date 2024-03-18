@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 
+import com.ip_position.ipposition.configs.CacheConfig;
 import com.ip_position.ipposition.entity.Provider;
 import com.ip_position.ipposition.repositories.ProviderRepository;
 
@@ -36,13 +37,13 @@ public class ProviderService {
     }
 
     public List<Provider> findProviders(Provider provider) {
-        if (cacheMap.containsKey("findProviders_" + provider.toString())) {
-            logger.info(String.format("Cache findProviders_%s value:\n%s", "findProviders_" + provider.toString(),
-                    cacheMap.get("findProviders_" + provider.toString()).toString()));
-            return cacheMap.get("findProviders_" + provider.toString());
+        String providerCache = CacheConfig.providerCache + provider.toString();
+        if (cacheMap.containsKey(providerCache)) {
+            logger.info(String.format("Cache %s value:\n%s", providerCache, cacheMap.get(providerCache).toString()));
+            return cacheMap.get(providerCache);
         }
         List<Provider> result = providerRepository.findProvider(provider);
-        cacheMap.put("findProviders_" + provider.toString(), result);
+        cacheMap.put(providerCache, result);
         return result;
     }
 

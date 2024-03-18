@@ -15,6 +15,7 @@ import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import com.ip_position.ipposition.configs.CacheConfig;
 import com.ip_position.ipposition.entity.City;
 import com.ip_position.ipposition.entity.IpInfo;
 import com.ip_position.ipposition.entity.Position;
@@ -87,13 +88,13 @@ public class IpInfoService {
     }
 
     public List<IpInfo> findIpInfoFromDB(IpInfo ipInfo) {
-        if (cacheMap.containsKey("findIpInfoFromDB_" + ipInfo.toString())) {
-            logger.info(String.format("Cache findIpInfoFromDB_%s value:\n%s", "findIpInfoFromDB_" + ipInfo.toString(),
-                    cacheMap.get("findIpInfoFromDB_" + ipInfo.toString()).toString()));
-            return (List<IpInfo>) cacheMap.get("findIpInfoFromDB_" + ipInfo.toString());
+        String cacheKey = CacheConfig.ipInfoCache + ipInfo.toString();
+        if (cacheMap.containsKey(cacheKey)) {
+            logger.info(String.format("Cache %s value:\n%s", cacheKey, cacheMap.get(cacheKey).toString()));
+            return (List<IpInfo>) cacheMap.get(cacheKey);
         }
         List<IpInfo> result = ipInfoRepository.findIpInfo(ipInfo);
-        cacheMap.put("findIpInfoFromDB_" + ipInfo.toString(), result);
+        cacheMap.put(cacheKey, result);
         return ipInfoRepository.findIpInfo(ipInfo);
     }
 

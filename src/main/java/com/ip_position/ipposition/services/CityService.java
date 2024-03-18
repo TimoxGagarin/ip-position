@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 
+import com.ip_position.ipposition.configs.CacheConfig;
 import com.ip_position.ipposition.entity.City;
 import com.ip_position.ipposition.repositories.CityRepository;
 
@@ -36,13 +37,13 @@ public class CityService {
     }
 
     public List<City> findCities(City city) {
-        if (cacheMap.containsKey("findCities_" + city.toString())) {
-            logger.info(String.format("Cache findCities_%s value:\n%s", "findCities_" + city.toString(),
-                    cacheMap.get("findCities_" + city.toString()).toString()));
-            return cacheMap.get("findCities_" + city.toString());
+        String cacheKey = CacheConfig.cityCache + city.toString();
+        if (cacheMap.containsKey(cacheKey)) {
+            logger.info(String.format("Cache %s value:\n%s", cacheKey, cacheMap.get(cacheKey).toString()));
+            return cacheMap.get(cacheKey);
         }
         List<City> result = cityRepository.findCity(city);
-        cacheMap.put("findCities_" + city.toString(), result);
+        cacheMap.put(cacheKey, result);
         return result;
     }
 

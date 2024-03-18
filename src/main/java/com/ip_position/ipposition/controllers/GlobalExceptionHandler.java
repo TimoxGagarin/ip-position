@@ -49,6 +49,6 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public String handleValidationExceptions(Exception ex) {
-        return ex.getLocalizedMessage().toString();
+        return ex.getLocalizedMessage();
     }
 }
