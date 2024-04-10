@@ -1,0 +1,22 @@
+мар. 19, 2024 11:59:53 AM com.ip_position.ipposition.logger.LoggerAspect <init>
+INFO: Log message
+мар. 19, 2024 11:59:58 AM com.ip_position.ipposition.logger.LoggerAspect logBeforeServiceCommand
+INFO: Invoke findIpInfoFromDB with args [IpInfo(id=null, city=City(id=null, country=null, countryCode=null, region=null, regionName=null, name=null, zip=null), position=Position(id=null, lat=null, lon=null), timezone=null, provider=Provider(id=null, internetServiceProvider=null, organisation=null, autonomusSystemName=null), ip=null)]
+мар. 19, 2024 11:59:58 AM com.ip_position.ipposition.logger.LoggerAspect logAfterServiceCommand
+INFO: Result of findIpInfoFromDB with args [IpInfo(id=null, city=City(id=null, country=null, countryCode=null, region=null, regionName=null, name=null, zip=null), position=Position(id=null, lat=null, lon=null), timezone=null, provider=Provider(id=null, internetServiceProvider=null, organisation=null, autonomusSystemName=null), ip=null)]: []
+мар. 19, 2024 12:00:18 PM com.ip_position.ipposition.logger.LoggerAspect logBeforeServiceCommand
+INFO: Invoke addNewIpInfo with args [IpInfo(id=null, city=City(id=null, country=Australia, countryCode=AU, region=QLD, regionName=Queensland, name=South Brisbane, zip=4101), position=Position(id=null, lat=-27.4766, lon=153.0166), timezone=UTC, provider=Provider(id=null, internetServiceProvider=Cloudflare, Inc, organisation=APNIC and Cloudflare DNS Resolver project, autonomusSystemName=AS13335 Cloudflare, Inc.), ip=9.250.254.255)]
+мар. 19, 2024 12:00:18 PM com.ip_position.ipposition.logger.LoggerAspect logBeforeServiceCommand
+INFO: Invoke addNewCity with args [City(id=null, country=Australia, countryCode=AU, region=QLD, regionName=Queensland, name=South Brisbane, zip=4101)]
+мар. 19, 2024 12:00:18 PM com.ip_position.ipposition.logger.LoggerAspect logAfterServiceCommand
+INFO: Result of addNewCity with args [City(id=1, country=Australia, countryCode=AU, region=QLD, regionName=Queensland, name=South Brisbane, zip=4101)]: City(id=1, country=Australia, countryCode=AU, region=QLD, regionName=Queensland, name=South Brisbane, zip=4101)
+мар. 19, 2024 12:00:18 PM com.ip_position.ipposition.logger.LoggerAspect logBeforeServiceCommand
+INFO: Invoke addNewProvider with args [Provider(id=null, internetServiceProvider=Cloudflare, Inc, organisation=APNIC and Cloudflare DNS Resolver project, autonomusSystemName=AS13335 Cloudflare, Inc.)]
+мар. 19, 2024 12:00:18 PM com.ip_position.ipposition.logger.LoggerAspect logAfterServiceCommand
+INFO: Result of addNewProvider with args [Provider(id=1, internetServiceProvider=Cloudflare, Inc, organisation=APNIC and Cloudflare DNS Resolver project, autonomusSystemName=AS13335 Cloudflare, Inc.)]: Provider(id=1, internetServiceProvider=Cloudflare, Inc, organisation=APNIC and Cloudflare DNS Resolver project, autonomusSystemName=AS13335 Cloudflare, Inc.)
+мар. 19, 2024 12:00:18 PM com.ip_position.ipposition.logger.LoggerAspect logBeforeServiceCommand
+INFO: Invoke addNewPosition with args [Position(id=null, lat=-27.4766, lon=153.0166)]
+мар. 19, 2024 12:00:18 PM com.ip_position.ipposition.logger.LoggerAspect logAfterServiceCommand
+INFO: Result of addNewPosition with args [Position(id=1, lat=-27.4766, lon=153.0166)]: Position(id=1, lat=-27.4766, lon=153.0166)
+мар. 19, 2024 12:00:18 PM com.ip_position.ipposition.logger.LoggerAspect logAfterServiceCommand
+INFO: Result of addNewIpInfo with args [IpInfo(id=1, city=City(id=1, country=Australia, countryCode=AU, region=QLD, regionName=Queensland, name=South Brisbane, zip=4101), position=Position(id=1, lat=-27.4766, lon=153.0166), timezone=UTC, provider=Provider(id=1, internetServiceProvider=Cloudflare, Inc, organisation=APNIC and Cloudflare DNS Resolver project, autonomusSystemName=AS13335 Cloudflare, Inc.), ip=9.250.254.255)]: success

@@ -1,7 +1,11 @@
 package com.ip_position.ipposition.logger;
 
+import java.io.IOException;
 import java.util.Arrays;
+import java.util.logging.FileHandler;
+import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.logging.SimpleFormatter;
 
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
@@ -18,6 +22,14 @@ public class LoggerAspect {
 
     public LoggerAspect() {
         this.logger = Logger.getLogger(this.getClass().getName());
+        try {
+            FileHandler fh = new FileHandler("logs.log", true);
+            this.logger.addHandler(fh);
+            fh.setFormatter(new SimpleFormatter());
+            this.logger.info("Log message");
+        } catch (SecurityException | IOException e) {
+            this.logger.log(Level.SEVERE, "Произошла ошибка при работе с FileHandler.", e);
+        }
     }
 
     @Before("execution(* com.ip_position.ipposition.services.*.*(..))")
