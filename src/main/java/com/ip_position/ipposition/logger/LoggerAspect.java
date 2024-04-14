@@ -47,7 +47,7 @@ public class LoggerAspect {
         requestCounter.increment();
         String methodName = joinPoint + " "
                 + joinPoint.getSignature().getName();
-        logger.info(() -> String.format("Request Counter: %d - %s\n", requestCounter.getCount(), methodName));
+        logger.info(() -> String.format("Request Counter: %d - %s%n", requestCounter.getCount(), methodName));
     }
 
     @AfterReturning(pointcut = "execution(* com.ip_position.ipposition.services.*.*(..))", returning = "result")
