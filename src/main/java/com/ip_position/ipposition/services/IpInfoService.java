@@ -136,7 +136,6 @@ public class IpInfoService {
 
     @Transactional
     public void updateIpInfo(Long ipInfoId) {
-        logger.info(ipInfoRepository.findById(ipInfoId).toString());
         IpInfo ipInfo = ipInfoRepository.findById(ipInfoId).orElseThrow(() -> new IllegalStateException(
                 String.format("IpInfo with id %d does not exists", ipInfoId)));
 
