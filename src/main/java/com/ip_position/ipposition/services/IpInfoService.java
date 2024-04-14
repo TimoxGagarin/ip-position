@@ -93,7 +93,7 @@ public class IpInfoService {
         }
         List<IpInfo> result = ipInfoRepository.findIpInfo(ipInfo);
         cacheMap.put(cacheKey, result);
-        return ipInfoRepository.findIpInfo(ipInfo);
+        return result;
     }
 
     public void addNewIpInfo(IpInfo ipInfo) {
@@ -127,28 +127,16 @@ public class IpInfoService {
         Position position = ipInfo.getPosition();
         ipInfoRepository.deleteById(ipInfoId);
 
-        try {
-            provider.removeCity(city);
-            cityService.deleteCity(city.getId());
-        } catch (IllegalStateException exception) {
-            logger.warning(exception.getMessage());
-        }
-        try {
-            city.removeProvider(provider);
-            providerService.deleteProvider(provider.getId());
-        } catch (IllegalStateException exception) {
-            logger.warning(exception.getMessage());
-        }
-        try {
-            positionService.deletePosition(position.getId());
-
-        } catch (IllegalStateException exception) {
-            logger.warning(exception.getMessage());
-        }
+        provider.removeCity(city);
+        cityService.deleteCity(city.getId());
+        city.removeProvider(provider);
+        providerService.deleteProvider(provider.getId());
+        positionService.deletePosition(position.getId());
     }
 
     @Transactional
     public void updateIpInfo(Long ipInfoId) {
+        logger.info(ipInfoRepository.findById(ipInfoId).toString());
         IpInfo ipInfo = ipInfoRepository.findById(ipInfoId).orElseThrow(() -> new IllegalStateException(
                 String.format("IpInfo with id %d does not exists", ipInfoId)));
 

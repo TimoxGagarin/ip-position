@@ -1,6 +1,7 @@
 package com.ip_position.ipposition;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.never;
@@ -59,6 +60,21 @@ class ProviderServiceTest {
     }
 
     @Test
+    void addNewProvider_hasEqualProvider_Success() {
+        Provider providerToAdd = new Provider("Amazon Technologies Inc.", "AWS EC2 (ap-southeast-1)",
+                "AS16509 Amazon.com, Inc.");
+
+        when(providerRepository.findProvider(providerToAdd)).thenReturn(List.of(providerToAdd));
+
+        Provider addedProvider = providerService.addNewProvider(providerToAdd);
+
+        assertEquals(providerToAdd, addedProvider);
+        verify(providerRepository, times(1)).findProvider(providerToAdd);
+        verify(providerRepository, never()).save(providerToAdd);
+        assertTrue(cacheMap.isEmpty());
+    }
+
+    @Test
     void findProviders_CacheHit() {
         Provider providerToFind = new Provider("Amazon Technologies Inc.", "AWS EC2 (ap-southeast-1)",
                 "AS16509 Amazon.com, Inc.");
@@ -74,6 +90,23 @@ class ProviderServiceTest {
         assertEquals(cachedProviders, foundProviders);
         assertEquals(cachedProviders, cacheMap.get(cacheKey));
         verify(providerRepository, never()).findProvider(providerToFind);
+    }
+
+    @Test
+    void findProviders_noCacheHit() {
+        Provider providerToFind = new Provider("Amazon Technologies Inc.", "AWS EC2 (ap-southeast-1)",
+                "AS16509 Amazon.com, Inc.");
+        List<Provider> cachedProviders = new ArrayList<>();
+        cachedProviders.add(new Provider("Amazon Technologies Inc.", "AWS EC2 (ap-southeast-1)",
+                "AS16509 Amazon.com, Inc."));
+
+        String cacheKey = CacheConfig.PROVIDER_CACHE_START + providerToFind.toString();
+
+        List<Provider> foundProviders = providerService.findProviders(providerToFind);
+
+        assertNotEquals(cachedProviders, foundProviders);
+        assertNotEquals(cachedProviders, cacheMap.get(cacheKey));
+        verify(providerRepository, times(1)).findProvider(providerToFind);
     }
 
     @Test

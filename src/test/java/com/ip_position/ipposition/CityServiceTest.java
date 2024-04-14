@@ -1,5 +1,6 @@
 package com.ip_position.ipposition;
 
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -63,6 +64,26 @@ class CityServiceTest {
     }
 
     @Test
+    void addNewCity_hasEqualCity_Success() {
+        City cityToAdd = new City("Singapore",
+                "SG",
+                "01",
+                "Central Singapore",
+                "Singapore",
+                "048582");
+
+        when(cityRepository.findCity(cityToAdd)).thenReturn(List.of(cityToAdd));
+        when(cityRepository.save(cityToAdd)).thenReturn(cityToAdd);
+
+        City addedCity = cityService.addNewCity(cityToAdd);
+
+        assertEquals(cityToAdd, addedCity);
+        verify(cityRepository, times(1)).findCity(cityToAdd);
+        verify(cityRepository, never()).save(cityToAdd);
+        assertTrue(cacheMap.isEmpty());
+    }
+
+    @Test
     void findCities_CacheHit() {
         City cityToFind = new City("Singapore",
                 "SG",
@@ -86,6 +107,31 @@ class CityServiceTest {
         assertEquals(cachedCities, foundCities);
         assertEquals(cachedCities, cacheMap.get(cacheKey));
         verify(cityRepository, never()).findCity(cityToFind);
+    }
+
+    @Test
+    void findCities_noCacheHit() {
+        City cityToFind = new City("Singapore",
+                "SG",
+                "01",
+                "Central Singapore",
+                "Singapore",
+                "048582");
+        List<City> cachedCities = new ArrayList<>();
+        cachedCities.add(new City("Singapore",
+                "SG",
+                "01",
+                "Central Singapore",
+                "Singapore",
+                "048582"));
+
+        String cacheKey = CacheConfig.CITY_CACHE_START + cityToFind.toString();
+
+        List<City> foundCities = cityService.findCities(cityToFind);
+
+        assertNotEquals(cachedCities, foundCities);
+        assertNotEquals(cachedCities, cacheMap.get(cacheKey));
+        verify(cityRepository, times(1)).findCity(cityToFind);
     }
 
     @Test
