@@ -14,14 +14,18 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.springframework.stereotype.Component;
 
+import com.ip_position.ipposition.utils.RequestCounter;
+
 @Aspect
 @Component
 public class LoggerAspect {
 
+    private final RequestCounter requestCounter;
     private Logger logger;
 
-    public LoggerAspect() {
+    public LoggerAspect(RequestCounter requestCounter) {
         this.logger = Logger.getLogger(this.getClass().getName());
+        this.requestCounter = requestCounter;
         try {
             FileHandler fh = new FileHandler("logs.log", true);
             this.logger.addHandler(fh);
@@ -38,13 +42,23 @@ public class LoggerAspect {
                 Arrays.toString(joinPoint.getArgs())));
     }
 
+    @AfterReturning(pointcut = "execution(* com.ip_position.ipposition.services.IpInfoService.*(..))", returning = "result")
+    public void incrementCounter(JoinPoint joinPoint, Object result) {
+        requestCounter.increment();
+        String methodName = joinPoint + " "
+                + joinPoint.getSignature().getName();
+        logger.info(() -> String.format("Request Counter: %d - %s\n", requestCounter.getCount(), methodName));
+    }
+
     @AfterReturning(pointcut = "execution(* com.ip_position.ipposition.services.*.*(..))", returning = "result")
     public void logAfterServiceCommand(JoinPoint joinPoint, Object result) {
+        String methodName = joinPoint + " "
+                + joinPoint.getSignature().getName();
         if (result != null)
-            logger.info(() -> String.format("Result of %s with args %s: %s", joinPoint.getSignature().getName(),
+            logger.info(() -> String.format("Result of %s with args %s: %s", methodName,
                     Arrays.toString(joinPoint.getArgs()), result.toString()));
         else
-            logger.info(() -> String.format("Result of %s with args %s: success", joinPoint.getSignature().getName(),
+            logger.info(() -> String.format("Result of %s with args %s: success", methodName,
                     Arrays.toString(joinPoint.getArgs())));
     }
 
