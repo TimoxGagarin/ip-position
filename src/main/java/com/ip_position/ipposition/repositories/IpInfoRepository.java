@@ -41,7 +41,7 @@ public interface IpInfoRepository extends JpaRepository<IpInfo, Long> {
             +
             "(:#{#ipInfo.provider != null ? #ipInfo.provider.organisation : null} IS NULL OR pr.organisation = :#{#ipInfo.provider != null ? #ipInfo.provider.organisation : null}) AND "
             +
-            "(:#{#ipInfo.provider != null ? #ipInfo.provider.autonomusSystemName : null} IS NULL OR pr.autonomusSystemName = :#{#ipInfo.provider != null ? #ipInfo.provider.autonomusSystemName : null}) AND "
+            "(:#{#ipInfo.provider != null ? #ipInfo.provider.autonomousSystemName : null} IS NULL OR pr.autonomousSystemName = :#{#ipInfo.provider != null ? #ipInfo.provider.autonomousSystemName : null}) AND "
             +
             "(:#{#ipInfo.position != null ? #ipInfo.position.latitude : null} IS NULL OR p.latitude = :#{#ipInfo.position != null ? #ipInfo.position.latitude : null}) AND "
             +

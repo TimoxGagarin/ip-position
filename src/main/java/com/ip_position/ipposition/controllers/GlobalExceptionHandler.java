@@ -2,6 +2,7 @@ package com.ip_position.ipposition.controllers;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,11 +22,10 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(ConstraintViolationException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseEntity<String> handleValidationExceptions1(ConstraintViolationException ex) {
-        StringBuilder errors = new StringBuilder();
-        for (ConstraintViolation<?> violation : ex.getConstraintViolations()) {
-            errors.append(violation.getMessage()).append("\n");
-        }
-        return ResponseEntity.badRequest().body(errors.toString());
+        return ResponseEntity.badRequest().body(
+                ex.getConstraintViolations().stream()
+                        .map(ConstraintViolation::getMessage)
+                        .collect(Collectors.joining("\n")));
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)

@@ -92,8 +92,8 @@ public class IpInfoController {
     @PostMapping("add")
     @ResponseStatus(HttpStatus.CREATED)
     public void addNewIpInfo(
-            @Parameter(description = "Информация об IP-адресе для добавления", required = true) @Valid @RequestBody IpInfoDTO ipInfo) {
-        ipInfoService.addNewIpInfo(ipInfo.getIpInfo());
+            @Parameter(description = "Информация об IP-адресе для добавления", required = true) @Valid @RequestBody List<IpInfoDTO> ipInfos) {
+        ipInfos.stream().map(ipInfo -> ipInfo.getIpInfo()).forEach(ipInfoService::addNewIpInfo);
     }
 
     @Operation(summary = "Удалить информацию об IP-адресе по ID")

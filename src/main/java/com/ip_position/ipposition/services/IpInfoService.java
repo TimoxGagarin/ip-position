@@ -3,13 +3,11 @@ package com.ip_position.ipposition.services;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.logging.Logger;
 
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
-import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -99,6 +97,9 @@ public class IpInfoService {
     }
 
     public void addNewIpInfo(IpInfo ipInfo) {
+        if (!ipInfoRepository.findIpInfo(ipInfo).isEmpty())
+            return;
+
         cacheMap.clear();
 
         City ipInfoCity = cityService.addNewCity(ipInfo.getCity());
@@ -111,38 +112,35 @@ public class IpInfoService {
 
         ipInfoCity.addProvider(ipInfoProvider);
         ipInfoProvider.addCity(ipInfoCity);
-        if (ipInfoRepository.findIpInfo(ipInfo).isEmpty())
-            ipInfoRepository.save(ipInfo);
+        ipInfoRepository.save(ipInfo);
     }
 
     @Transactional
-    public void deleteIpInfo(@NonNull Long ipInfoId) {
-        Optional<IpInfo> ipInfo = ipInfoRepository.findById(ipInfoId);
-
-        if (ipInfo.isEmpty())
-            throw new IllegalStateException(String.format(IP_INFO_DOESNT_EXIST, ipInfoId));
+    public void deleteIpInfo(Long ipInfoId) {
+        IpInfo ipInfo = ipInfoRepository.findById(ipInfoId).orElseThrow(() -> new IllegalStateException(
+                String.format(String.format(IP_INFO_DOESNT_EXIST, ipInfoId))));
 
         cacheMap.clear();
 
-        City city = ipInfo.get().getCity();
-        Provider provider = ipInfo.get().getProvider();
-        Position position = ipInfo.get().getPosition();
+        City city = ipInfo.getCity();
+        Provider provider = ipInfo.getProvider();
+        Position position = ipInfo.getPosition();
         ipInfoRepository.deleteById(ipInfoId);
 
         try {
             provider.removeCity(city);
-            cityService.deleteCity(Objects.requireNonNull(city.getId()));
+            cityService.deleteCity(city.getId());
         } catch (IllegalStateException exception) {
             logger.warning(exception.getMessage());
         }
         try {
             city.removeProvider(provider);
-            providerService.deleteProvider(Objects.requireNonNull(provider.getId()));
+            providerService.deleteProvider(provider.getId());
         } catch (IllegalStateException exception) {
             logger.warning(exception.getMessage());
         }
         try {
-            positionService.deletePosition(Objects.requireNonNull(position.getId()));
+            positionService.deletePosition(position.getId());
 
         } catch (IllegalStateException exception) {
             logger.warning(exception.getMessage());
@@ -150,7 +148,7 @@ public class IpInfoService {
     }
 
     @Transactional
-    public void updateIpInfo(@NonNull Long ipInfoId) {
+    public void updateIpInfo(Long ipInfoId) {
         IpInfo ipInfo = ipInfoRepository.findById(ipInfoId).orElseThrow(() -> new IllegalStateException(
                 String.format("IpInfo with id %d does not exists", ipInfoId)));
 
@@ -173,7 +171,7 @@ public class IpInfoService {
                     ipInfo.getCity().toString()));
             IpInfo filter = new IpInfo(null, prevCity, null, null, null, null);
             if (ipInfoRepository.findIpInfo(filter).isEmpty())
-                cityService.deleteCity(Objects.requireNonNull(prevCity.getId()));
+                cityService.deleteCity(prevCity.getId());
         }
         if (!ipInfo.getProvider().equals(realIpInfo.getProvider())) {
             ipInfo.setProvider(providerService.addNewProvider(realIpInfo.getProvider()));
@@ -181,7 +179,7 @@ public class IpInfoService {
                     ipInfo.getProvider().toString()));
             IpInfo filter = new IpInfo(null, null, null, null, prevProvider, null);
             if (ipInfoRepository.findIpInfo(filter).isEmpty())
-                providerService.deleteProvider(Objects.requireNonNull(prevProvider.getId()));
+                providerService.deleteProvider(prevProvider.getId());
         }
         if (!ipInfo.getPosition().equals(realIpInfo.getPosition())) {
             ipInfo.setPosition(positionService.addNewPosition(realIpInfo.getPosition()));
@@ -189,7 +187,7 @@ public class IpInfoService {
                     ipInfo.getPosition().toString()));
             IpInfo filter = new IpInfo(null, null, prevPosition, null, null, null);
             if (ipInfoRepository.findIpInfo(filter).isEmpty())
-                positionService.deletePosition(Objects.requireNonNull(prevPosition.getId()));
+                positionService.deletePosition(prevPosition.getId());
         }
     }
 }

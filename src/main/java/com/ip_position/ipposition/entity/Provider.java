@@ -33,7 +33,7 @@ public class Provider {
     private String organisation;
 
     @Schema(example = "AS13335 Cloudflare, Inc.", required = true)
-    private String autonomusSystemName;
+    private String autonomousSystemName;
 
     @JsonIgnore
     @ManyToMany
@@ -47,20 +47,20 @@ public class Provider {
             Long id,
             String internetServiceProvider,
             String organisation,
-            String autonomusSystemName) {
+            String autonomousSystemName) {
         this.id = id;
         this.internetServiceProvider = internetServiceProvider;
         this.organisation = organisation;
-        this.autonomusSystemName = autonomusSystemName;
+        this.autonomousSystemName = autonomousSystemName;
     }
 
     public Provider(
             String internetServiceProvider,
             String organisation,
-            String autonomusSystemName) {
+            String autonomousSystemName) {
         this.internetServiceProvider = internetServiceProvider;
         this.organisation = organisation;
-        this.autonomusSystemName = autonomusSystemName;
+        this.autonomousSystemName = autonomousSystemName;
     }
 
     public Long getId() {
@@ -87,12 +87,12 @@ public class Provider {
         this.organisation = organisation;
     }
 
-    public String getAutonomusSystemName() {
-        return this.autonomusSystemName;
+    public String getAutonomousSystemName() {
+        return this.autonomousSystemName;
     }
 
-    public void setAutonomusSystemName(String autonomusSystemName) {
-        this.autonomusSystemName = autonomusSystemName;
+    public void setAutonomousSystemName(String autonomousSystemName) {
+        this.autonomousSystemName = autonomousSystemName;
     }
 
     public Set<City> getCities() {
@@ -114,7 +114,7 @@ public class Provider {
         return "Provider(id=" + this.id +
                 ", internetServiceProvider=" + this.internetServiceProvider +
                 ", organisation=" + this.organisation +
-                ", autonomusSystemName=" + this.autonomusSystemName + ")";
+                ", autonomousSystemName=" + this.autonomousSystemName + ")";
     }
 
     @Override
@@ -126,12 +126,12 @@ public class Provider {
         Provider other = (Provider) obj;
         return Objects.equals(this.internetServiceProvider, other.internetServiceProvider) &&
                 Objects.equals(this.organisation, other.organisation) &&
-                Objects.equals(this.autonomusSystemName, other.autonomusSystemName);
+                Objects.equals(this.autonomousSystemName, other.autonomousSystemName);
 
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(internetServiceProvider, organisation, autonomusSystemName);
+        return Objects.hash(internetServiceProvider, organisation, autonomousSystemName);
     }
 }

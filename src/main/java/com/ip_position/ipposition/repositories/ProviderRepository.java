@@ -15,7 +15,7 @@ public interface ProviderRepository extends JpaRepository<Provider, Long> {
             "(:#{#provider.internetServiceProvider} IS NULL OR p.internetServiceProvider = :#{#provider.internetServiceProvider}) AND "
             +
             "(:#{#provider.organisation} IS NULL OR p.organisation = :#{#provider.organisation}) AND " +
-            "(:#{#provider.autonomusSystemName} IS NULL OR p.autonomusSystemName = :#{#provider.autonomusSystemName})")
+            "(:#{#provider.autonomousSystemName} IS NULL OR p.autonomousSystemName = :#{#provider.autonomousSystemName})")
     List<Provider> findProvider(@Param("provider") Provider provider);
 
     @Query("SELECT COUNT(r) > 0 FROM IpInfo r WHERE r.provider.id = ?1")
