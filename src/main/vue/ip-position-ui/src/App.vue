@@ -71,8 +71,8 @@ export default{
     },
     methods: {
         getIpInfo() {
-            var new_dict = {...this.filter.provider, ...this.filter.city, ...this.filter.position, "ip": this.filter.ip, "timeZone": this.filter.timeZone};
-            var queryString = Object.keys(new_dict)
+            let new_dict = {...this.filter.provider, ...this.filter.city, ...this.filter.position, "ip": this.filter.ip, "timeZone": this.filter.timeZone};
+            let queryString = Object.keys(new_dict)
             .map(key => {
                 const value = new_dict[key];
                 // Проверяем, что значение не пустое
@@ -221,7 +221,6 @@ button {
     border-radius: 5px;
     border: 2px solid #b99935;
     padding: 10px 15px;
-    margin-left: 20px;
     cursor: pointer;
     transition: transform 500ms ease;
     margin-top: 15px;

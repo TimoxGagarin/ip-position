@@ -42,8 +42,7 @@ import "leaflet/dist/leaflet.css";
                 '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
             }).addTo(this.map);
             
-            var customPane = this.map.createPane("customPane");
-            var canvasRenderer = L.canvas({ pane: "customPane" });
+            let customPane = this.map.createPane("customPane");
             customPane.style.zIndex = 399; // put just behind the standard overlay pane which is at 400
             this.addMarkers(this.ipInfo);
         },
