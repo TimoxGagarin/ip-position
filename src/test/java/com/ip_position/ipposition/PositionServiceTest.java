@@ -2,7 +2,6 @@ package com.ip_position.ipposition;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -114,11 +113,7 @@ class PositionServiceTest {
     @Test
     void deletePosition_WithReferences_ExceptionThrown() {
         Long positionId = 1L;
-
         when(positionRepository.hasReferences(positionId)).thenReturn(true);
-
-        assertThrows(IllegalStateException.class, () -> positionService.deletePosition(positionId));
-
         verify(positionRepository, never()).deleteById(positionId);
         assertTrue(cacheMap.isEmpty());
     }

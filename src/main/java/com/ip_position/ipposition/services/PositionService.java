@@ -48,11 +48,8 @@ public class PositionService {
 
     public void deletePosition(@NonNull Long positionId) {
         boolean hasReferences = positionRepository.hasReferences(positionId);
-
-        if (hasReferences) {
-            throw new IllegalStateException("Position with id " + positionId + " does not exists or has references");
-        }
-
+        if (hasReferences)
+            return;
         cacheMap.clear();
         positionRepository.deleteById(positionId);
     }

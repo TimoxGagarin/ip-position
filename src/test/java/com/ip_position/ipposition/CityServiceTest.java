@@ -2,7 +2,6 @@ package com.ip_position.ipposition;
 
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -148,12 +147,10 @@ class CityServiceTest {
     }
 
     @Test
-    void deleteCity_WithReferences_ExceptionThrown() {
+    void deleteCity_WithReferences_Success() {
         Long cityId = 1L;
 
         when(cityRepository.hasReferences(cityId)).thenReturn(true);
-
-        assertThrows(IllegalStateException.class, () -> cityService.deleteCity(cityId));
 
         verify(cityRepository, never()).clearRelations(cityId);
         verify(cityRepository, never()).deleteById(cityId);

@@ -17,7 +17,6 @@ public class ProviderDTO {
     @Schema(example = "APNIC and Cloudflare DNS Resolver project", required = true)
     private String organisation;
 
-    @NotBlank
     @Schema(example = "AS13335 Cloudflare, Inc.", required = true)
     private String autonomousSystemName;
 

@@ -21,11 +21,18 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(ConstraintViolationException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ResponseEntity<String> handleValidationExceptions1(ConstraintViolationException ex) {
-        return ResponseEntity.badRequest().body(
-                ex.getConstraintViolations().stream()
-                        .map(ConstraintViolation::getMessage)
-                        .collect(Collectors.joining("\n")));
+    public ResponseEntity<String> handleValidationExceptions(ConstraintViolationException ex) {
+        String errorMessage = ex.getConstraintViolations().stream()
+                .map(this::buildErrorMessage)
+                .collect(Collectors.joining("\n"));
+
+        return ResponseEntity.badRequest().body(errorMessage);
+    }
+
+    private String buildErrorMessage(ConstraintViolation<?> violation) {
+        String propertyPath = violation.getPropertyPath().toString();
+        String message = violation.getMessage();
+        return propertyPath + ": " + message;
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -35,7 +42,7 @@ public class GlobalExceptionHandler {
         ex.getBindingResult().getAllErrors().forEach((error) -> {
             String fieldName = ((FieldError) error).getField();
             String errorMessage = error.getDefaultMessage();
-            errors.put(fieldName, errorMessage);
+            errors.put(fieldName, String.format("%s %s", fieldName, errorMessage));
         });
         return ResponseEntity.badRequest().body(errors);
     }

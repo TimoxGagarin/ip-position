@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.NonNull;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -53,6 +54,7 @@ public class IpInfoController {
     @Operation(summary = "Получить информацию об IP-адресе из базы данных по параметрам", responses = {
             @ApiResponse(description = "Информация об IP-адресе", content = @Content(mediaType = "application/json", schema = @Schema(implementation = IpInfo.class)))
     })
+    @CrossOrigin(origins = "*")
     @GetMapping("find")
     public ResponseEntity<List<IpInfo>> getIpInfoDB(
             @Parameter(description = "IP-адрес") @RequestParam(required = false) String ip,
@@ -90,6 +92,7 @@ public class IpInfoController {
 
     @Operation(summary = "Добавить новую информацию об IP-адресе")
     @PostMapping("add")
+    @CrossOrigin(origins = "*")
     @ResponseStatus(HttpStatus.CREATED)
     public void addNewIpInfo(
             @Parameter(description = "Информация об IP-адресе для добавления", required = true) @Valid @RequestBody List<IpInfoDTO> ipInfos) {
@@ -97,6 +100,7 @@ public class IpInfoController {
     }
 
     @Operation(summary = "Удалить информацию об IP-адресе по ID")
+    @CrossOrigin(origins = "*")
     @DeleteMapping("delete")
     public void deleteIpInfo(
             @Parameter(description = "ID информации об IP-адресе для удаления", required = true) @RequestParam(required = true) @NonNull Long id) {
@@ -104,6 +108,7 @@ public class IpInfoController {
     }
 
     @Operation(summary = "Обновить информацию об IP-адресе по ID")
+    @CrossOrigin(origins = "*")
     @PutMapping("update")
     public void updateIpInfo(
             @Parameter(description = "ID информации об IP-адресе для обновления", required = true) @RequestParam(required = true) @NonNull Long id) {

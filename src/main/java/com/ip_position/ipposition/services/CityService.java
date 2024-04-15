@@ -46,11 +46,8 @@ public class CityService {
 
     public void deleteCity(@NonNull Long cityId) {
         boolean hasReferences = cityRepository.hasReferences(cityId);
-
-        if (hasReferences) {
-            throw new IllegalStateException("City with id " + cityId + " does not exists or has references");
-        }
-
+        if (hasReferences)
+            return;
         cacheMap.clear();
         cityRepository.clearRelations(cityId);
         cityRepository.deleteById(cityId);

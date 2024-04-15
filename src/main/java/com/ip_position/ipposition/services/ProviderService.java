@@ -47,11 +47,8 @@ public class ProviderService {
 
     public void deleteProvider(@NonNull Long providerId) {
         boolean hasReferences = providerRepository.hasReferences(providerId);
-
-        if (hasReferences) {
-            throw new IllegalStateException("Provider with id " + providerId + " does not exists or has references");
-        }
-
+        if (hasReferences)
+            return;
         cacheMap.clear();
         providerRepository.clearRelations(providerId);
         providerRepository.deleteById(providerId);

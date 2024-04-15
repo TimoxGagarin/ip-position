@@ -5,17 +5,20 @@ import com.ip_position.ipposition.entity.Position;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.DecimalMax;
 import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.NotNull;
 
 @Schema(description = "DTO representing position information")
 public class PositionDTO {
     @Schema(description = "Position ID", example = "1")
     private Long id;
 
+    @NotNull
     @DecimalMin("-90.0")
     @DecimalMax("90.0")
     @Schema(description = "Latitude", example = "-27.4766", required = true)
     private Double latitude;
 
+    @NotNull
     @DecimalMin("-180.0")
     @DecimalMax("180.0")
     @Schema(description = "Longitude", example = "153.0166", required = true)
