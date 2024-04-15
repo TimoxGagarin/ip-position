@@ -54,7 +54,7 @@ public class IpInfoController {
         @Operation(summary = "Получить информацию об IP-адресе из базы данных по параметрам", responses = {
                         @ApiResponse(description = "Информация об IP-адресе", content = @Content(mediaType = "application/json", schema = @Schema(implementation = IpInfo.class)))
         })
-        @CrossOrigin
+        @CrossOrigin("localhost:5173")
         @GetMapping("find")
         public ResponseEntity<List<IpInfo>> getIpInfoDB(
                         @Parameter(description = "IP-адрес") @RequestParam(required = false) String ip,
@@ -92,7 +92,7 @@ public class IpInfoController {
 
         @Operation(summary = "Добавить новую информацию об IP-адресе")
         @PostMapping("add")
-        @CrossOrigin
+        @CrossOrigin("localhost:5173")
         @ResponseStatus(HttpStatus.CREATED)
         public void addNewIpInfo(
                         @Parameter(description = "Информация об IP-адресе для добавления", required = true) @Valid @RequestBody List<IpInfoDTO> ipInfos) {
@@ -100,7 +100,7 @@ public class IpInfoController {
         }
 
         @Operation(summary = "Удалить информацию об IP-адресе по ID")
-        @CrossOrigin
+        @CrossOrigin("localhost:5173")
         @DeleteMapping("delete")
         public void deleteIpInfo(
                         @Parameter(description = "ID информации об IP-адресе для удаления", required = true) @RequestParam(required = true) @NonNull Long id) {
@@ -108,7 +108,7 @@ public class IpInfoController {
         }
 
         @Operation(summary = "Обновить информацию об IP-адресе по ID")
-        @CrossOrigin
+        @CrossOrigin("localhost:5173")
         @PutMapping("update")
         public void updateIpInfo(
                         @Parameter(description = "ID информации об IP-адресе для обновления", required = true) @RequestParam(required = true) @NonNull Long id) {
