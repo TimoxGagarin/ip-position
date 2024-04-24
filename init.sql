@@ -1,41 +1,47 @@
-create table city (
-    id bigint not null,
-    country varchar(255),
-    country_code varchar(255),
-    name varchar(255),
-    region varchar(255),
-    region_name varchar(255),
-    zip varchar(255),
-    primary key (id)
+CREATE SEQUENCE city_sequence START 1 INCREMENT 1;
+CREATE SEQUENCE ipinfo_sequence START 1 INCREMENT 1;
+CREATE SEQUENCE position_sequence START 1 INCREMENT 1;
+CREATE SEQUENCE provider_sequence START 1 INCREMENT 1;
+
+CREATE TABLE city (
+    id BIGINT PRIMARY KEY DEFAULT nextval('city_sequence'),
+    country VARCHAR(255) NOT NULL,
+    country_code VARCHAR(2) NOT NULL,
+    region VARCHAR(255) NOT NULL,
+    region_name VARCHAR(255) NOT NULL,
+    name VARCHAR(255) NOT NULL,
+    zip VARCHAR(255) NOT NULL
 );
-    
-create table city_provider_relation (
-    city_id bigint not null,
-    provider_id bigint not null,
-    primary key (city_id, provider_id)
+
+CREATE TABLE position (
+    id BIGINT PRIMARY KEY DEFAULT nextval('position_sequence'),
+    latitude NUMERIC(10, 8) NOT NULL,
+    longitude NUMERIC(11, 8) NOT NULL
 );
-    
-create table ip_info (
-    city_id bigint,
-    id bigint not null,
-    position_id bigint,
-    provider_id bigint,
-    ip varchar(255),
-    time_zone varchar(255),
-    primary key (id)
+
+CREATE TABLE provider (
+    id BIGINT PRIMARY KEY DEFAULT nextval('provider_sequence'),
+    internet_service_provider VARCHAR(255) NOT NULL,
+    organisation VARCHAR(255) NOT NULL,
+    autonomous_system_name VARCHAR(255) NOT NULL
 );
-    
-create table position (
-    latitude float(53),
-    longitude float(53),
-    id bigint not null,
-    primary key (id)
+
+CREATE TABLE city_provider_relation (
+    provider_id BIGINT NOT NULL,
+    city_id BIGINT NOT NULL,
+    PRIMARY KEY (provider_id, city_id),
+    FOREIGN KEY (provider_id) REFERENCES provider(id),
+    FOREIGN KEY (city_id) REFERENCES city(id)
 );
-    
-create table provider (
-    id bigint not null,
-    autonomous_system_name varchar(255),
-    internet_service_provider varchar(255),
-    organisation varchar(255),
-    primary key (id)
+
+CREATE TABLE ip_info (
+    id BIGINT PRIMARY KEY DEFAULT nextval('ipinfo_sequence'),
+    city_id BIGINT NOT NULL,
+    position_id BIGINT NOT NULL,
+    time_zone VARCHAR(255) NOT NULL,
+    provider_id BIGINT NOT NULL,
+    ip VARCHAR(255) NOT NULL,
+    FOREIGN KEY (city_id) REFERENCES city(id),
+    FOREIGN KEY (position_id) REFERENCES position(id),
+    FOREIGN KEY (provider_id) REFERENCES provider(id)
 );
