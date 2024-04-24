@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
@@ -33,6 +34,8 @@ import jakarta.validation.Valid;
 
 @Validated
 @RestController
+@CrossOrigin(origins = "*", methods = { RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT,
+        RequestMethod.DELETE }, allowedHeaders = "*")
 @RequestMapping("ips-info")
 public class IpInfoController {
 
@@ -54,7 +57,6 @@ public class IpInfoController {
     @Operation(summary = "Получить информацию об IP-адресе из базы данных по параметрам", responses = {
             @ApiResponse(description = "Информация об IP-адресе", content = @Content(mediaType = "application/json", schema = @Schema(implementation = IpInfo.class)))
     })
-    @CrossOrigin("/**")
     @GetMapping("find")
     public ResponseEntity<List<IpInfo>> getIpInfoDB(
             @Parameter(description = "IP-адрес") @RequestParam(required = false) String ip,
@@ -92,7 +94,6 @@ public class IpInfoController {
 
     @Operation(summary = "Добавить новую информацию об IP-адресе")
     @PostMapping("add")
-    @CrossOrigin("/**")
     @ResponseStatus(HttpStatus.CREATED)
     public void addNewIpInfo(
             @Parameter(description = "Информация об IP-адресе для добавления", required = true) @Valid @RequestBody List<IpInfoDTO> ipInfos) {
@@ -100,7 +101,6 @@ public class IpInfoController {
     }
 
     @Operation(summary = "Удалить информацию об IP-адресе по ID")
-    @CrossOrigin("/**")
     @DeleteMapping("delete")
     public void deleteIpInfo(
             @Parameter(description = "ID информации об IP-адресе для удаления", required = true) @RequestParam(required = true) @NonNull Long id) {
@@ -108,7 +108,6 @@ public class IpInfoController {
     }
 
     @Operation(summary = "Обновить информацию об IP-адресе по ID")
-    @CrossOrigin("/**")
     @PutMapping("update")
     public void updateIpInfo(
             @Parameter(description = "ID информации об IP-адресе для обновления", required = true) @RequestParam(required = true) @NonNull Long id) {
